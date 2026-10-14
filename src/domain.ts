@@ -1,0 +1,14 @@
+export const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] as const;
+export type Day = typeof DAYS[number];
+export type Meeting = { day: Day; start: string; end: string };
+export type Faculty = { id: string; name: string; title: string; initials: string; qualified: string[]; maxCredits: number };
+export type Course = { id: string; name: string; credits: number; area: string };
+export type Section = { id: string; courseId: string; number: string; meetings: Meeting[]; seats: number; room: string };
+export type Preference = { facultyId: string; rankedCourses: string[]; availability: Meeting[]; preferred: Meeting[]; status: 'draft' | 'submitted'; updatedAt: string };
+export type Assignment = { id: string; facultyId: string; sectionId: string; approvedAt: string; reason: string };
+export type AuditEvent = { id: string; at: string; actor: string; action: string; detail: string; facultyId?: string };
+export type State = { version: 1; revision: number; faculty: Faculty[]; courses: Course[]; sections: Section[]; preferences: Preference[]; assignments: Assignment[]; audit: AuditEvent[] };
+export type Identity = { role: 'scheduler' | 'faculty'; facultyId: string };
+export type Candidate = { faculty: Faculty; eligible: boolean; reasons: string[]; courseRank: number; outsidePreferred: number; load: number; credits: number; explanation: string[] };
+export const TERM = 'Spring 2027';
+export const TIMEZONE = 'America/New_York';
