@@ -1,0 +1,30 @@
+<section id="next-checks" style="background:#EDE3DC;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<h2 style="position:absolute;left:96px;top:96px;width:1600px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#0B2E4A">Accessibility checks to keep doing</h2>
+<div style="position:absolute;left:96px;top:260px;width:1728px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Text size</h3>
+<p style="font-size:26px;line-height:1.45">A 14px minimum, in rem units so the browser’s font setting works.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Reflow at 320px</h3>
+<p style="font-size:26px;line-height:1.45">A test that looks for clipped content, not just page-level scroll.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Colorblindness</h3>
+<p style="font-size:26px;line-height:1.45">Chrome DevTools › Rendering › Emulate vision deficiencies, on every new screen.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Form errors</h3>
+<p style="font-size:26px;line-height:1.45">Name the field, set aria-invalid, and move focus to the problem.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Keyboard and focus</h3>
+<p style="font-size:26px;line-height:1.45">Tab order, a visible focus ring, and dialog focus on open, close and error.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Screen reader and targets</h3>
+<p style="font-size:26px;line-height:1.45">A VoiceOver pass, and touch targets of at least 24×24px.</p>
+</div>
+</div>
+<aside>The axe WCAG A/AA scans already in the suite stay in place; these cover what automated scans miss. At 320 and 375px, 10 controls in the review dialog and 11 on My preferences are under 24×24px.</aside>
+</section>

@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>FacultyPlan QA Review</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap">
+<style>
+@page { size: 1920px 1080px; margin: 0 }
+* { box-sizing: border-box; margin: 0 }
+body { background: #555; }
+section { position: relative; width: 1920px; height: 1080px; overflow: hidden; break-after: page; }
+table { border-collapse: collapse; }
+th, td { padding: 0.35em 0.6em; border-bottom: 1px solid #D9D4CF; text-align: left; vertical-align: top; }
+th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
+@media screen { section { margin: 0 auto 24px; } }
+</style></head><body>
+<section id="cover" data-transition="fade" style="background:#2F3749;color:#FBFBF8;font-family:Roboto, Arial, sans-serif;padding:0">
+<img src="../qa-screenshots/03-approved.jpg" alt="FacultyPlan Course sections screen after approving Elena Petrova for CS 101 section 002" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<svg aria-label="" width="1920" height="1080" viewBox="0 0 1920 1080" style="position:absolute;left:0;top:0;width:1920px;height:1080px"><polygon points="0,880 1920,380 1920,1080 0,1080" fill="#2F3749"/><line x1="0" y1="880" x2="1920" y2="380" stroke="#D9C3B5" stroke-width="6"/></svg>
+<h1 style="position:absolute;left:1000px;top:640px;width:800px;font-family:Merriweather, Georgia, serif;font-size:96px;font-weight:400;line-height:1.1;color:#FBFBF8">FacultyPlan</h1>
+<p style="position:absolute;left:1000px;top:770px;width:800px;font-size:40px;font-weight:300;line-height:1.4;color:#FBFBF8">Quality and release review<br>11/7/2026</p>
+<p style="position:absolute;left:1000px;top:910px;width:800px;font-size:30px;line-height:1.4;color:#D9C3B5">Storm Curtis</p>
+
+</section>
+
+<section id="intro" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:880px;height:1080px;background:#2F3749"></div>
+<svg width="1920" height="1080" style="position:absolute;left:0;top:0"><line x1="0" y1="900" x2="880" y2="640" stroke="#D9C3B5" stroke-width="6"/></svg>
+<h2 style="position:absolute;left:96px;top:128px;width:720px;font-family:Merriweather, Georgia, serif;font-size:72px;font-weight:400;line-height:1.2;color:#FBFBF8">Introduction to the study</h2>
+<div style="position:absolute;left:992px;top:128px;width:800px;display:flex;flex-direction:column;gap:36px">
+<p style="font-size:32px;line-height:1.45"><i>FacultyPlan</i> is a local prototype. Professors submit teaching preferences; a scheduler reviews ranked recommendations and approves assignments.</p>
+<p style="font-size:32px;line-height:1.45">Reviewed: branch <b>playwright-multi-browser-setup</b>, commit c306290.</p>
+<p style="font-size:32px;line-height:1.45">Goal: make setup and the core demo repeatable, and find the most useful repairs.</p>
+<p style="font-size:32px;line-height:1.45">Method: a fresh clone and <b>npm run check</b>, the DEMO.md walkthrough by hand in Chrome, and scripted checks in Chromium, Firefox and WebKit.</p>
+</div>
+
+</section>
+
+<section id="severity" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:1920px;height:200px;background:#2F3749"></div>
+<h2 style="position:absolute;left:96px;top:56px;width:1200px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">Severity key</h2>
+<div style="position:absolute;left:0;top:208px;width:1920px;height:166px;background:#F1EDE9"></div>
+<div style="position:absolute;left:0;top:208px;width:380px;height:166px;background:#00796B"></div>
+<div style="position:absolute;left:297px;top:208px;width:166px;height:166px;background:#00796B;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:258px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#FBFBF8">Positive</p>
+<p style="position:absolute;left:540px;top:248px;width:1290px;font-size:32px;line-height:1.4">Works as expected. A good practice to keep through future changes.</p>
+<div style="position:absolute;left:0;top:382px;width:1920px;height:166px;background:#F1EDE9"></div>
+<div style="position:absolute;left:0;top:382px;width:380px;height:166px;background:#C9A227"></div>
+<div style="position:absolute;left:297px;top:382px;width:166px;height:166px;background:#C9A227;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:432px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#2A2410">Low</p>
+<p style="position:absolute;left:540px;top:422px;width:1290px;font-size:32px;line-height:1.4">A quality issue: cosmetic, docs or test noise. Adds up over time.</p>
+<div style="position:absolute;left:0;top:556px;width:1920px;height:166px;background:#F1EDE9"></div>
+<div style="position:absolute;left:0;top:556px;width:380px;height:166px;background:#D2741C"></div>
+<div style="position:absolute;left:297px;top:556px;width:166px;height:166px;background:#D2741C;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:606px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#24160A">Medium</p>
+<p style="position:absolute;left:540px;top:596px;width:1290px;font-size:32px;line-height:1.4">Frustrates some users, but doesn’t stop them finishing a core task.</p>
+<div style="position:absolute;left:0;top:730px;width:1920px;height:166px;background:#F1EDE9"></div>
+<div style="position:absolute;left:0;top:730px;width:380px;height:166px;background:#B3261E"></div>
+<div style="position:absolute;left:297px;top:730px;width:166px;height:166px;background:#B3261E;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:780px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#FBFBF8">Serious</p>
+<p style="position:absolute;left:540px;top:770px;width:1290px;font-size:32px;line-height:1.4">Significantly slows some users on a core task, or blocks them. Fix soon.</p>
+<div style="position:absolute;left:0;top:904px;width:1920px;height:166px;background:#F1EDE9"></div>
+<div style="position:absolute;left:0;top:904px;width:380px;height:166px;background:#2F3749"></div>
+<div style="position:absolute;left:297px;top:904px;width:166px;height:166px;background:#2F3749;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:954px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#FBFBF8">Critical</p>
+<p style="position:absolute;left:540px;top:944px;width:1290px;font-size:32px;line-height:1.4">Users can’t finish a core task, or data is wrong. Fix urgently. (None found.)</p>
+
+</section>
+
+<section id="checklist" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:1920px;height:200px;background:#2F3749"></div>
+<h2 style="position:absolute;left:96px;top:56px;width:1200px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">Demo checklist</h2>
+<p style="position:absolute;left:1180px;top:76px;width:640px;font-size:32px;line-height:1.4;text-align:right;color:#D9C3B5">13 pass · 1 flaky · 2 fail</p>
+<h3 style="position:absolute;left:96px;top:250px;width:820px;font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Setup and walkthrough</h3>
+<table style="position:absolute;left:96px;top:310px;width:820px;font-family:Roboto, Arial, sans-serif;font-size:28px;color:#4A4F57">
+<tr><th style="width:62%">Check</th><th style="width:38%">Result</th></tr>
+<tr><td>Fresh clone, npm ci</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>npm run check</td><td style="color:#1E6E52">Pass (23/23)</td></tr>
+<tr><td>Existing browser suite</td><td style="color:#8A5A00">Flaky (17/18)</td></tr>
+<tr><td>DEMO.md steps 1–6</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Preference → approval</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Lower-ranked needs a note</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Reload keeps assignment</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Activity & history</td><td style="color:#1E6E52">Pass</td></tr>
+</table>
+<h3 style="position:absolute;left:1004px;top:250px;width:820px;font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Edge cases and accessibility</h3>
+<table style="position:absolute;left:1004px;top:310px;width:820px;font-family:Roboto, Arial, sans-serif;font-size:28px;color:#4A4F57">
+<tr><th style="width:62%">Check</th><th style="width:38%">Result</th></tr>
+<tr><td>Invalid time window</td><td style="color:#1E6E52">Pass (blocked)</td></tr>
+<tr><td>No eligible match</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Hard-constraint protection</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Keyboard navigation</td><td style="color:#1E6E52">Pass*</td></tr>
+<tr><td>Width 375px</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Width 320px</td><td style="color:#B3261E">Fail</td></tr>
+<tr><td>Colorblind simulation</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Text size</td><td style="color:#B3261E">Fail</td></tr>
+</table>
+<p style="position:absolute;left:96px;top:976px;width:1728px;font-size:24px;line-height:1.4;color:#5F646C">* Keyboard: dialogs, skip link and focus return work, but focus is lost after form errors. CSV export is covered by the automated suite only.</p>
+
+</section>
+
+<section id="findings" data-transition="fade" style="background:#EDE3DC;color:#0B2E4A;font-family:Merriweather, Georgia, serif;padding:0">
+<svg width="1920" height="1080" style="position:absolute;left:0;top:0"><line x1="0" y1="900" x2="1920" y2="360" stroke="#FBFBF8" stroke-width="6"/></svg>
+<h2 style="position:absolute;left:96px;top:300px;width:1200px;font-size:96px;font-weight:400;line-height:1.15;color:#0B2E4A">Findings</h2>
+<p style="position:absolute;left:96px;top:430px;width:1200px;font-size:48px;font-weight:400;line-height:1.3;color:#0B2E4A">-Layout and readability<br>-Forms and focus<br>-Tests<br>-What works well</p>
+
+</section>
+
+<section id="f-reflow" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#B3261E"></div>
+<div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#B3261E;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#FBFBF8">Serious</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“Where did the end time go?”</h2>
+<img src="../qa-screenshots/08-preferences-320px-clipped.png" alt="My preferences at 320 pixels wide: the end-time fields in Hard availability are cut off at the right edge" style="object-position:50% 55%;position:absolute;left:280px;top:400px;width:400px;height:600px;object-fit:cover;border:2px solid #5A6478">
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: At 320px wide, each time row is 321px wide inside a 282px panel set to <i>overflow: hidden</i>. The end-time fields are cut off, with no way to scroll to them.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Someone on a small phone, or zoomed to 400% (the WCAG reflow test), can’t see or set an end time.</p>
+<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: Below about 360px, stack start and end on separate lines. Add a test that checks for clipped content, not just page scroll.</p>
+<p style="font-size:28px;line-height:1.45;color:#5F646C">Steps: 320px width → Professor view → My preferences. Fine at 375px.</p>
+</div>
+
+</section>
+
+<section id="f-textsize" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#B3261E"></div>
+<div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#B3261E;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#FBFBF8">Serious</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“The text is tiny.”</h2>
+<p style="position:absolute;left:64px;top:430px;width:840px;font-family:Merriweather, Georgia, serif;font-size:160px;font-weight:700;line-height:1.1;color:#FBFBF8">564<span style="color:#D9C3B5"> / 579</span></p>
+<p style="position:absolute;left:64px;top:630px;width:820px;font-size:32px;line-height:1.45;color:#D9C3B5">text items on Course sections render smaller than 12px</p>
+<p style="position:absolute;left:64px;top:790px;width:820px;font-size:32px;line-height:1.45;color:#D9C3B5">styles.css: 8px ×4 · 9px ×10 · 10px ×24 · 11px ×26</p>
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: Font sizes are fixed pixels, mostly 8–12px.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Hard to read, especially for older professors. Raising the browser’s default font size does nothing: a table cell stays 11px even at double size. Only page zoom helps.</p>
+<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: Switch to rem units, with about 16px body text and a 14px minimum. Then recheck that the dense tables still fit.</p>
+</div>
+
+</section>
+
+<section id="f-validation" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#D2741C"></div>
+<div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#D2741C;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#24160A">Medium</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“Which time is wrong?”</h2>
+<img src="../qa-screenshots/01-invalid-time-window.jpg" alt="My preferences with Tuesday ending at 08:00 AM, and a generic red banner at the top: Every time window needs a valid start time before its end time" style="position:absolute;left:64px;top:440px;width:832px;height:420px;object-fit:contain;border:2px solid #5A6478">
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: A time window that ends before it starts gets one generic banner at the top of the page. No field is highlighted or marked <i>aria-invalid</i>, and focus drops to the page body.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Professors have to hunt through ten time fields. Keyboard and screen-reader users lose their place. (The bad value is correctly not saved.)</p>
+<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: Name the day in the message, mark and highlight that field, and move focus to it.</p>
+</div>
+
+</section>
+
+<section id="f-note" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#D2741C"></div>
+<div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#D2741C;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#24160A">Medium</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“But it said optional!”</h2>
+<img src="../qa-screenshots/02-lower-ranked-needs-note.jpg" alt="Review dialog for CS 101 section 002 with Priya Shah selected and the error: Add a reason for selecting a lower-ranked candidate" style="position:absolute;left:64px;top:440px;width:832px;height:420px;object-fit:contain;border:2px solid #5A6478">
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: The decision note’s placeholder always reads “Optional context for this assignment…”, even after a lower-ranked candidate is picked and a note becomes required.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Schedulers find out only after clicking Approve. The dialog then jumps to the top and focus lands on the page body, away from the note.</p>
+<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: When a non-top candidate is selected, label the note “Required” and mark it required. On error, move focus to the note.</p>
+</div>
+
+</section>
+
+<section id="f-flake" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#C9A227"></div>
+<div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#C9A227;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#2A2410">Low</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“Did it just double-approve?”</h2>
+<p style="position:absolute;left:64px;top:430px;width:840px;font-family:Merriweather, Georgia, serif;font-size:160px;font-weight:700;line-height:1.1;color:#FBFBF8">84<span style="color:#D9C3B5"> / 84</span></p>
+<p style="position:absolute;left:64px;top:630px;width:820px;font-size:32px;line-height:1.45;color:#D9C3B5">checked runs saved exactly one assignment. The data is safe; the test is flaky.</p>
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: The Firefox run of “competing review tabs cannot double-approve” fails in about half of full-suite runs. It can’t find the conflict message, even with a 15-second wait. It passes 40/40 when run alone.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: A red suite with nothing actually broken. People learn to ignore failures.</p>
+<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: Check the stored assignment count first, since that’s the real rule. Then check each tab’s message with <i>expect().toPass()</i>.</p>
+</div>
+
+</section>
+
+<section id="pos-color" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#00796B"></div>
+<div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#00796B;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#FBFBF8">Positive</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“Approved” still reads in grayscale</h2>
+<img src="../qa-screenshots/10-sections-grayscale.png" alt="Course sections list rendered in full grayscale; Approved and Unassigned badges are still readable as words" style="position:absolute;left:64px;top:440px;width:832px;height:578px;object-fit:contain;border:2px solid #5A6478">
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: Every status badge has a text label (“Approved”, “Unassigned”), and the draft warning is written out, not just colored.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Under simulated deuteranopia, protanopia, tritanopia and full grayscale, every screen is still readable. The automated WCAG A/AA contrast scan also passes.</p>
+<p style="font-size:32px;line-height:1.45"><b>Keep</b>: Never let color carry meaning on its own in future screens.</p>
+</div>
+
+</section>
+
+<section id="pos-guards" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#00796B"></div>
+<div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#00796B;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#FBFBF8">Positive</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“Okay, I can’t break the rules.”</h2>
+<img src="../qa-screenshots/07-hard-constraint-blocked.jpg" alt="My preferences with Monday unchecked and the message: These hours would invalidate CS 101 · 001. Ask the scheduler to remove that assignment first" style="position:absolute;left:64px;top:440px;width:832px;height:420px;object-fit:contain;border:2px solid #5A6478">
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: Every write rechecks the hard rules: availability, qualification, credit load and approval conflicts.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Removing Maya’s Monday is blocked with a clear reason. CS 499 · 005 explains why there’s no match and disables Approve. Two tabs racing to approve save exactly one assignment.</p>
+<p style="font-size:32px;line-height:1.45"><b>Keep</b>: Carry the same recheck into the AWS version as database transactions.</p>
+</div>
+
+</section>
+
+<section id="low-notes" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:1920px;height:200px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:200px;background:#C9A227"></div>
+<div style="position:absolute;left:280px;top:0;width:200px;height:200px;background:#C9A227;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
+<p style="position:absolute;left:48px;top:64px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#2A2410">Low</p>
+<h2 style="position:absolute;left:560px;top:56px;width:1260px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">Smaller notes</h2>
+<div style="position:absolute;left:96px;top:270px;width:1728px;display:flex;flex-direction:column;gap:36px">
+<p style="font-size:32px;line-height:1.45"><b>README is out of date</b>: it says local tests use Microsoft Edge, but this branch runs bundled Chromium, Firefox and WebKit.</p>
+<p style="font-size:32px;line-height:1.45"><b>Reload resets the role</b>: the app always reopens in Scheduler view, so every check needs the professor picked again.</p>
+<p style="font-size:32px;line-height:1.45"><b>Focus ring clipped</b>: on the “Needs your attention” rows, only the top and bottom edges of the outline show.</p>
+<p style="font-size:32px;line-height:1.45"><b>Hidden actions at 375px</b>: Review and Manage are off-screen in the tables until you swipe sideways, with no hint that you can.</p>
+<p style="font-size:32px;line-height:1.45"><b>Unchecked days look editable</b>: an unchecked availability day keeps its time fields looking active.</p>
+</div>
+
+</section>
+
+<section id="test-added" data-transition="fade" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:880px;height:1080px;background:#2F3749"></div>
+<svg width="1920" height="1080" style="position:absolute;left:0;top:0"><line x1="0" y1="900" x2="880" y2="640" stroke="#D9C3B5" stroke-width="6"/></svg>
+<h2 style="position:absolute;left:96px;top:128px;width:720px;font-family:Merriweather, Georgia, serif;font-size:72px;font-weight:400;line-height:1.2;color:#FBFBF8">One new browser test</h2>
+<p style="position:absolute;left:96px;top:450px;width:700px;font-size:32px;line-height:1.45;color:#D9C3B5">The suite tested duplicate course ranks, but not a time window that ends before it starts.</p>
+<div style="position:absolute;left:992px;top:128px;width:800px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:32px;line-height:1.45"><b>Test</b>: “availability window ending before it starts is rejected and not saved”, in tests/browser/journey.spec.ts.</p>
+<p style="font-family:'Courier New', monospace;font-size:26px;line-height:1.5;color:#EDE3DC;background:#2F3749;padding:28px;border-radius:12px">npx playwright test -g "availability window ending"<br>✓ chromium (1.1s)<br>✓ webkit (1.4s)<br>✓ firefox (1.7s)<br>3 passed (3.3s)</p>
+<p style="font-size:32px;line-height:1.45"><b>It can fail</b>: with the start-before-end rule removed from src/matching.ts, it fails. The error message never appears.</p>
+<p style="font-size:32px;line-height:1.45"><b>Full suite</b>: 20 passed, 1 failed (the Firefox flake).</p>
+</div>
+
+</section>
+
+<section id="cant-do" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:1920px;height:200px;background:#2F3749"></div>
+<h2 style="position:absolute;left:96px;top:56px;width:1600px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">What I couldn’t do</h2>
+<div style="position:absolute;left:96px;top:270px;width:1728px;display:flex;flex-direction:column;gap:36px">
+<p style="font-size:32px;line-height:1.45"><b>Microsoft Edge</b>: the task notes say local tests use Edge, but this branch’s config no longer does. Nothing ran in Edge.</p>
+<p style="font-size:32px;line-height:1.45"><b>Narrow width in real Chrome</b>: the browser window wouldn’t resize, so 320px and 375px were tested in Playwright Chromium instead.</p>
+<p style="font-size:32px;line-height:1.45"><b>CSV export by hand</b>: not clicked, because it downloads a file. The existing automated test covers it.</p>
+<p style="font-size:32px;line-height:1.45"><b>Screen reader</b>: no VoiceOver pass. Labels and focus were only checked by script.</p>
+<p style="font-size:32px;line-height:1.45"><b>Firefox flake</b>: the root cause wasn’t found within the time box.</p>
+</div>
+
+</section>
+
+<section id="next-checks" style="background:#EDE3DC;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<h2 style="position:absolute;left:96px;top:96px;width:1600px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#0B2E4A">Accessibility checks to keep doing</h2>
+<div style="position:absolute;left:96px;top:260px;width:1728px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Text size</h3>
+<p style="font-size:26px;line-height:1.45">A 14px minimum, in rem units so the browser’s font setting works.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Reflow at 320px</h3>
+<p style="font-size:26px;line-height:1.45">A test that looks for clipped content, not just page-level scroll.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Colorblindness</h3>
+<p style="font-size:26px;line-height:1.45">Chrome DevTools › Rendering › Emulate vision deficiencies, on every new screen.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Form errors</h3>
+<p style="font-size:26px;line-height:1.45">Name the field, set aria-invalid, and move focus to the problem.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Keyboard and focus</h3>
+<p style="font-size:26px;line-height:1.45">Tab order, a visible focus ring, and dialog focus on open, close and error.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Screen reader and targets</h3>
+<p style="font-size:26px;line-height:1.45">A VoiceOver pass, and touch targets of at least 24×24px.</p>
+</div>
+</div>
+
+</section>
+
+<section id="ai-usage" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:1920px;height:200px;background:#2F3749"></div>
+<h2 style="position:absolute;left:96px;top:56px;width:1600px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">AI usage statement</h2>
+<div style="position:absolute;left:96px;top:250px;width:1060px;display:flex;flex-direction:column;gap:22px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Done by an AI assistant (Claude, in Claude Code)</h3>
+<p style="font-size:26px;line-height:1.45">Ran the fresh-clone setup, <b>npm run check</b> and the browser suite.</p>
+<p style="font-size:26px;line-height:1.45">Did the DEMO.md walkthrough and edge cases in Chrome and took the screenshots. Scripted the narrow-width, text-size, colorblind and race checks in Playwright.</p>
+<p style="font-size:26px;line-height:1.45">Investigated the Firefox flake, wrote up the issues and severity ratings, and wrote and mutation-checked the new browser test.</p>
+<p style="font-size:26px;line-height:1.45">Wrote Storm/QA-REPORT.md, and all of this deck’s text and slide layouts.</p>
+</div>
+<div style="position:absolute;left:1236px;top:250px;width:588px;display:flex;flex-direction:column;gap:22px;background:#EDE3DC;padding:40px;border-radius:12px">
+<h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Provided by Storm</h3>
+<p style="font-size:26px;line-height:1.45">The task card and the request to do it.</p>
+<p style="font-size:26px;line-height:1.45">The slide template and severity scale, from an earlier UX review.</p>
+<p style="font-size:26px;line-height:1.45">First-impressions notes (source of “The text is tiny”).</p>
+<p style="font-size:26px;line-height:1.45">Direction to add Chrome screenshots and accessibility checks.</p>
+</div>
+<p style="position:absolute;left:96px;top:930px;width:1728px;font-size:26px;line-height:1.45;color:#5F646C">The findings come from real test runs and screenshots, but no person has re-run them independently yet. Treat them as a starting point to confirm.</p>
+
+</section>
+
+</body></html>

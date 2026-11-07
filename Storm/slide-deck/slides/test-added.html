@@ -1,0 +1,13 @@
+<section id="test-added" data-transition="fade" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:880px;height:1080px;background:#2F3749"></div>
+<x-connector x1="0" y1="900" x2="880" y2="640" head="none" style="color:#D9C3B5;border-width:6px"></x-connector>
+<h2 style="position:absolute;left:96px;top:128px;width:720px;font-family:Merriweather, Georgia, serif;font-size:72px;font-weight:400;line-height:1.2;color:#FBFBF8">One new browser test</h2>
+<p style="position:absolute;left:96px;top:450px;width:700px;font-size:32px;line-height:1.45;color:#D9C3B5">The suite tested duplicate course ranks, but not a time window that ends before it starts.</p>
+<div style="position:absolute;left:992px;top:128px;width:800px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:32px;line-height:1.45"><b>Test</b>: “availability window ending before it starts is rejected and not saved”, in tests/browser/journey.spec.ts.</p>
+<p style="font-family:'Courier New', monospace;font-size:26px;line-height:1.5;color:#EDE3DC;background:#2F3749;padding:28px;border-radius:12px">npx playwright test -g "availability window ending"<br>✓ chromium (1.1s)<br>✓ webkit (1.4s)<br>✓ firefox (1.7s)<br>3 passed (3.3s)</p>
+<p style="font-size:32px;line-height:1.45"><b>It can fail</b>: with the start-before-end rule removed from src/matching.ts, it fails. The error message never appears.</p>
+<p style="font-size:32px;line-height:1.45"><b>Full suite</b>: 20 passed, 1 failed (the Firefox flake).</p>
+</div>
+<aside>The test sets Tuesday’s hard-availability end to 08:00, submits, checks the error, reloads, and confirms Tuesday still ends at 16:00.</aside>
+</section>
