@@ -59,6 +59,18 @@ test('validation, recoverable failure, no-match and reset', async ({ page }) => 
   await page.getByRole('button', { name: 'Reset demo data' }).click();
   await expect(page.locator('#toast')).toContainText('Demo reset');
 });
+test('availability window ending before it starts is rejected and not saved', async ({ page }) => {
+  await page.goto('/');
+  await page.getByLabel('Demo role').selectOption('faculty');
+  await page.getByRole('button', { name: 'My preferences', exact: true }).click();
+  await page.locator('[name="available-Tue-end"]').fill('08:00');
+  await page.getByRole('button', { name: 'Submit preferences' }).click();
+  await expect(page.getByRole('alert')).toContainText('valid start time before its end time');
+  await page.reload();
+  await page.getByLabel('Demo role').selectOption('faculty');
+  await page.getByRole('button', { name: 'My preferences', exact: true }).click();
+  await expect(page.locator('[name="available-Tue-end"]')).toHaveValue('16:00');
+});
 test('competing review tabs cannot double-approve the same section', async ({ page, context }) => {
   const other = await context.newPage();
   for (const tab of [page, other]) {
