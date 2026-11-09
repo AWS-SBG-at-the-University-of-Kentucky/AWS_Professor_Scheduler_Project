@@ -1,9 +1,13 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+// Existing journeys start as the scheduler; the role picker has its own test in mobile.spec.ts.
+test.beforeEach(async ({ context }) => {
+  await context.addInitScript(() => { if (!localStorage.getItem('facultyplan.identity')) localStorage.setItem('facultyplan.identity', JSON.stringify({ role: 'scheduler', facultyId: 'FAC-001' })); });
+});
 test('professor preferences → scheduler approval → persisted professor schedule → CSV and removal', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'A clear view of the semester.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sections to assign.' })).toBeVisible();
   await page.screenshot({ path: 'test-results/overview-desktop.png', fullPage: true });
   await page.getByLabel('Demo role').selectOption('faculty');
   await page.getByRole('button', { name: 'My preferences', exact: true }).click();
@@ -86,7 +90,7 @@ test('competing review tabs cannot double-approve the same section', async ({ pa
 test('mobile layout, keyboard navigation and empty searches', async ({ page, browserName }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'A clear view of the semester.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sections to assign.' })).toBeVisible();
   await page.screenshot({ path: 'test-results/overview-mobile.png', fullPage: true });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   // Safari only tabs to links with Option+Tab unless the user changes a setting.
@@ -104,7 +108,7 @@ test('mobile layout, keyboard navigation and empty searches', async ({ page, bro
 });
 test('main views and recommendation dialog pass automated accessibility checks', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'A clear view of the semester.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Sections to assign.' })).toBeVisible();
   const check = async () => {
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
     expect(results.violations.map(v => ({ id: v.id, targets: v.nodes.map(n => n.target), detail: v.nodes[0]?.failureSummary }))).toEqual([]);

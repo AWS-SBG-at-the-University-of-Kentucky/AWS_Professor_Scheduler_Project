@@ -11,11 +11,11 @@ npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173/**. Use the role selector at the top to switch between scheduler and professor views. The initial view is the scheduler dashboard. **Demo walkthrough** provides an in-app guide. On Windows PowerShell, use `npm.cmd` if the local execution policy blocks `npm.ps1`.
+Open **http://127.0.0.1:5173/**. A first-visit role picker asks whether you are the scheduler or a professor; use the role selector at the top to switch later. Each role opens on its main task: the scheduler's sections-to-assign queue, or the professor's preference status. **Demo walkthrough** provides an in-app guide. On Windows PowerShell, use `npm.cmd` if the local execution policy blocks `npm.ps1`.
 
 ```sh
 npm run check       # Rule tests, TypeScript checking, and production build
-npm run test:e2e    # Browser journey, concurrency, mobile, and accessibility checks
+npm run test:e2e    # Browser journey, concurrency, phone (Pixel and iPhone profiles), 320px clipping, 200% text, and accessibility checks
 npm run preview    # Serve built dist/ output on http://127.0.0.1:4173/
 ```
 
@@ -23,6 +23,7 @@ Local browser tests use installed Microsoft Edge. CI installs Playwright Chromiu
 
 ## Included
 
+- Phone-ready layout: stacked cards instead of wide tables, bottom tab bar, 44px touch targets, and text that follows the browser/device text size (rem-based, checked at 200%).
 - Responsive scheduler and professor dashboards, searchable section browser, and faculty directory.
 - Repeatable synthetic dataset: **25 faculty, 12 courses, 60 sections, one semester**, with 12 initial approved assignments.
 - Course rankings, separate hard availability and preferred day/time windows, save draft, and submit.
