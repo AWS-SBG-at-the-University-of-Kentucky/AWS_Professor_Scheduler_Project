@@ -76,17 +76,32 @@ for (const role of ['scheduler', 'faculty'] as const) {
   });
 }
 
-test('everything still works at 200% text size on a narrow screen', async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 700 });
-  await asRole(page, 'scheduler');
-  await page.goto('/');
-  await page.addStyleTag({ content: 'html{font-size:200% !important}' });
-  for (const view of views.scheduler) {
-    await page.getByRole('button', { name: new RegExp(`^${view}`) }).click();
-    expect.soft(await clipped(page), `clipped on ${view} at 200%`).toEqual([]);
-  }
-  await page.getByRole('button', { name: /^Course sections/ }).click();
-  await page.getByRole('button', { name: 'Review' }).first().click();
-  await expect(page.getByRole('button', { name: 'Approve assignment', exact: true })).toBeVisible();
-  expect(await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze().then(r => r.violations.map(v => v.id))).toEqual([]);
-});
+for (const scale of [130, 200]) {
+  test(`everything still works at ${scale}% text size on a narrow screen`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    await asRole(page, 'scheduler');
+    await page.goto('/');
+    await expect(page.locator('h1')).toBeVisible();
+    // Text must track the root size. Compare against it, since iOS WebKit derives its own root size from Dynamic Type.
+    const ratios = () => page.evaluate(() => {
+      const root = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const size = (sel: string) => parseFloat(getComputedStyle(document.querySelector(sel)!).fontSize);
+      return { root, h1: size('h1') / root, p: size('p') / root };
+    });
+    const before = await ratios();
+    await page.addStyleTag({ content: `html{font-size:${scale}% !important}` });
+    const after = await ratios();
+    // px-sized text ignores the root size, which is how this test once passed without testing anything.
+    expect(after.root).toBeGreaterThan(before.root);
+    expect(after.h1).toBeCloseTo(before.h1, 1);
+    expect(after.p).toBeCloseTo(before.p, 1);
+    for (const view of views.scheduler) {
+      await page.getByRole('button', { name: new RegExp(`^${view}`) }).click();
+      expect.soft(await clipped(page), `clipped on ${view} at ${scale}%`).toEqual([]);
+    }
+    await page.getByRole('button', { name: /^Course sections/ }).click();
+    await page.getByRole('button', { name: 'Review' }).first().click();
+    await expect(page.getByRole('button', { name: 'Approve assignment', exact: true })).toBeVisible();
+    expect(await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze().then(r => r.violations.map(v => v.id))).toEqual([]);
+  });
+}

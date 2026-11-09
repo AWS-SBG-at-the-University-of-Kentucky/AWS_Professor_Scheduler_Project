@@ -133,3 +133,8 @@ select,input:not([type=checkbox]):not([type=radio]){min-height:max(2.75rem,44px)
 @media(max-width:43.75em){.brand{font-size:1rem}}
 @media(max-width:62.5em){.metrics{grid-template-columns:repeat(auto-fit,minmax(min(10rem,100%),1fr))}.metric{min-width:0}}
 select{-webkit-appearance:none;appearance:none;padding-right:2.2rem;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23536781' stroke-width='1.8'%3E%3Cpath d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E") no-repeat right .8rem center}
+.brand>span:last-child{min-width:0}.welcome .brand{width:auto;max-width:100%}
+/* Touch targets: 44px minimum for controls at every width, including phones at large system text. */
+.nav-item,.button,.button.compact,.progress-panel .button,.page-heading>.button,.prototype-bar button,.text-button,.segmented button,
+.identity-controls select,.time-row input[type=time],input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
+@media(max-width:700px){.nav-item{padding-bottom:13px}}
