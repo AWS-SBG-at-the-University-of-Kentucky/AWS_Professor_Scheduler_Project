@@ -28,10 +28,10 @@ Manual checks were done in Chrome, scripted checks in Playwright Chromium, Firef
 
 ## Highest-priority issues
 
-### 1. End-time fields are cut off at 320px and can't be reached by scrolling
+### 1. End-time fields lose their clock icon at 320px (Low)
 - **Steps:** Set the browser width to 320px, choose Professor view, then My preferences.
-- **Expected:** Every availability and preferred-hours field is fully visible. 320px is the WCAG 2.1 SC 1.4.10 Reflow width, which also equals 1280px zoomed to 400%.
-- **Actual:** Each `.time-row` is 321px wide inside a `.panel.time-panel` with `overflow:hidden` that is 282px wide. The "to" end-time inputs are clipped on the right and you can't scroll to them. Fine at 375px.
+- **Expected:** Every availability and preferred-hours field, including its clock icon, is fully visible. 320px is the WCAG 2.1 SC 1.4.10 Reflow width, which also equals 1280px zoomed to 400%.
+- **Actual:** Each `.time-row` is 321px wide inside a `.panel.time-panel` with `overflow:hidden` that is 282px wide. The "to" end-time inputs are clipped on the right: the time is still readable but the clock icon is cut off, and you can't scroll to it. A quality issue, not a blocker. Fine at 375px.
 - **Why the suite misses it:** The mobile test runs at 390px and only checks `document.scrollWidth`. Clipping by `overflow:hidden` never makes the page itself scroll.
 - **Screenshot:** `qa-screenshots/08-preferences-320px-clipped.png`
 

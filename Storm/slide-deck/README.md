@@ -1,6 +1,6 @@
 # FacultyPlan QA Review (slide deck)
 
-- `FacultyPlan-QA-Review.pdf` — 17 slides, 16:9, ready to present or attach.
+- `FacultyPlan-QA-Review.pdf` — 21 slides, 16:9, ready to present or attach.
 - `FacultyPlan-QA-Review.html` — the same deck as one web page (open in a browser; images load from `../qa-screenshots/`).
 - `deck.json` + `slides/` — the editable source.
 
