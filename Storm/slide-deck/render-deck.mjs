@@ -20,6 +20,9 @@ const blobs = {
   '67bf53dd9189afa99f1b1a7df686d3f4': '05-no-eligible-match.jpg',
   '6bfe71c6ee22e043db2060f959f3aceb': '07-hard-constraint-blocked.jpg',
   'fe44f56eb21e2dccf26fd7efdd6be244': '03-approved.jpg',
+  'a3f1c9d2e7b84056a1d3c8e92f4b7a60': '06-focus-ring-clipped.png',
+  '5d0e7b2c91a64f38b6c2e1d4a8f39c75': '09-sections-375px.png',
+  'c84e1a7f3b2d4906a5e8d17b0c93f2e6': '11-unchecked-day-active-fields.png',
 };
 
 const deck = JSON.parse(readFileSync(join(deckDir, 'deck.json'), 'utf8'));
