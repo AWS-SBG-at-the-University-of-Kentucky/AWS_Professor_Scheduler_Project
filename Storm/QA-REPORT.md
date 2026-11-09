@@ -118,3 +118,10 @@ This pass was carried out with an AI assistant (Claude, in Claude Code).
 - Direction to add Chrome screenshots and accessibility checks.
 
 The findings come from real test runs and screenshots taken during this session, but no person has re-run them independently yet. Treat them as a starting point to confirm.
+
+## Update after PR #3 (phone-and-landing)
+Checked against the PR branch (open, not merged). Dates and numbers above describe the original build.
+- **Fixed:** text size (all font sizes in rem, none left in px, tested at 200% text), 320px clipping (time rows wrap, element-level clipping test), stacked table cards instead of hidden actions at 375px, role remembered after reload, 44px tap-target minimum.
+- **Still open:** validation errors don't name the field (no `aria-invalid`), decision-note placeholder still says "Optional" although the label says required, README still names Edge.
+- **Not rechecked:** focus ring clipping, unchecked days looking editable, Firefox flake root cause (33/33 passed in one run).
+- **Not verified:** real iOS Dynamic Type; Android emulator run (412px, font scale 2.0) covered scheduler views only.

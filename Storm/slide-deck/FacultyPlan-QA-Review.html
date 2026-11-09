@@ -27,7 +27,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <h2 style="position:absolute;left:96px;top:128px;width:720px;font-family:Merriweather, Georgia, serif;font-size:72px;font-weight:400;line-height:1.2;color:#FBFBF8">Introduction to the study</h2>
 <div style="position:absolute;left:992px;top:128px;width:800px;display:flex;flex-direction:column;gap:36px">
 <p style="font-size:32px;line-height:1.45"><i>FacultyPlan</i> is a local prototype. Professors submit teaching preferences; a scheduler reviews ranked recommendations and approves assignments.</p>
-<p style="font-size:32px;line-height:1.45">Reviewed: branch <b>playwright-multi-browser-setup</b>, commit c306290.</p>
+<p style="font-size:32px;line-height:1.45">Reviewed: branch <b>playwright-multi-browser-setup</b>, commit c306290. Re-checked against PR #3.</p>
 <p style="font-size:32px;line-height:1.45">Goal: make setup and the core demo repeatable, and find the most useful repairs.</p>
 <p style="font-size:32px;line-height:1.45">Method: a fresh clone and <b>npm run check</b>, the DEMO.md walkthrough by hand in Chrome, and scripted checks in Chromium, Firefox and WebKit.</p>
 </div>
@@ -68,7 +68,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <section id="checklist" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
 <div style="position:absolute;left:0;top:0;width:1920px;height:200px;background:#2F3749"></div>
 <h2 style="position:absolute;left:96px;top:56px;width:1200px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">Demo checklist</h2>
-<p style="position:absolute;left:1180px;top:76px;width:640px;font-size:32px;line-height:1.4;text-align:right;color:#D9C3B5">13 pass · 1 flaky · 2 fail</p>
+<p style="position:absolute;left:1180px;top:76px;width:640px;font-size:32px;line-height:1.4;text-align:right;color:#D9C3B5">13 pass · 1 flaky · 2 fixed in PR #3</p>
 <h3 style="position:absolute;left:96px;top:250px;width:820px;font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Setup and walkthrough</h3>
 <table style="position:absolute;left:96px;top:310px;width:820px;font-family:Roboto, Arial, sans-serif;font-size:28px;color:#4A4F57">
 <tr><th style="width:62%">Check</th><th style="width:38%">Result</th></tr>
@@ -89,9 +89,9 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <tr><td>Hard-constraint protection</td><td style="color:#1E6E52">Pass</td></tr>
 <tr><td>Keyboard navigation</td><td style="color:#1E6E52">Pass*</td></tr>
 <tr><td>Width 375px</td><td style="color:#1E6E52">Pass</td></tr>
-<tr><td>Width 320px</td><td style="color:#B3261E">Fail</td></tr>
+<tr><td>Width 320px</td><td style="color:#8A5A00">Fixed in PR #3</td></tr>
 <tr><td>Colorblind simulation</td><td style="color:#1E6E52">Pass</td></tr>
-<tr><td>Text size</td><td style="color:#B3261E">Fail</td></tr>
+<tr><td>Text size</td><td style="color:#8A5A00">Fixed in PR #3</td></tr>
 </table>
 <p style="position:absolute;left:96px;top:976px;width:1728px;font-size:24px;line-height:1.4;color:#5F646C">* Keyboard: dialogs, skip link and focus return work, but focus is lost after form errors. CSV export is covered by the automated suite only.</p>
 
@@ -109,15 +109,15 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#B3261E"></div>
 <div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#B3261E;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
 <p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#FBFBF8">Serious</p>
-<p style="position:absolute;left:64px;top:160px;width:840px;font-size:24px;letter-spacing:0.12em;text-transform:uppercase;color:#D9C3B5">Scheduler view</p>
+<p style="position:absolute;left:64px;top:160px;width:840px;font-size:24px;letter-spacing:0.12em;text-transform:uppercase;color:#D9C3B5">Scheduler view · fixed in PR #3</p>
 <h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“The text is tiny.”</h2>
 <p style="position:absolute;left:64px;top:430px;width:840px;font-family:Merriweather, Georgia, serif;font-size:160px;font-weight:700;line-height:1.1;color:#FBFBF8">564<span style="color:#D9C3B5"> / 579</span></p>
-<p style="position:absolute;left:64px;top:630px;width:820px;font-size:32px;line-height:1.45;color:#D9C3B5">text items on Course sections render smaller than 12px</p>
-<p style="position:absolute;left:64px;top:790px;width:820px;font-size:32px;line-height:1.45;color:#D9C3B5">styles.css: 8px ×4 · 9px ×10 · 10px ×24 · 11px ×26</p>
+<p style="position:absolute;left:64px;top:630px;width:820px;font-size:32px;line-height:1.45;color:#D9C3B5">text items on Course sections were smaller than 12px before PR #3</p>
+<p style="position:absolute;left:64px;top:790px;width:820px;font-size:32px;line-height:1.45;color:#D9C3B5">styles.css before: 64 fixed sizes at 8–11px. After PR #3: none, all in rem.</p>
 <div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
-<p style="font-size:32px;line-height:1.45"><b>Cause</b>: Font sizes are fixed pixels, mostly 8–12px.</p>
-<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Hard to read, especially for older professors. Raising the browser’s default font size does nothing: a table cell stays 11px even at double size. Only page zoom helps.</p>
-<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: Switch to rem units, with about 16px body text and a 14px minimum. Then recheck that the dense tables still fit.</p>
+<p style="font-size:32px;line-height:1.45"><b>Was</b>: Font sizes were fixed pixels, mostly 8–12px.</p>
+<p style="font-size:32px;line-height:1.45"><b>Now</b>: Sizes are in rem, so the browser’s font setting works. PR #3 tests every screen at 200% text on a narrow screen, and an Android emulator at font scale 2.0 showed no clipping.</p>
+<p style="font-size:32px;line-height:1.45"><b>Keep</b>: A minimum-size check on new screens. Real iOS Dynamic Type has not been verified yet.</p>
 </div>
 
 </section>
@@ -131,7 +131,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“But it said optional!”</h2>
 <img src="../qa-screenshots/02-lower-ranked-needs-note.jpg" alt="Review dialog for CS 101 section 002 with Priya Shah selected and the error: Add a reason for selecting a lower-ranked candidate" style="position:absolute;left:64px;top:440px;width:832px;height:420px;object-fit:contain;border:2px solid #5A6478">
 <div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
-<p style="font-size:32px;line-height:1.45"><b>Cause</b>: The decision note’s placeholder always reads “Optional context for this assignment…”, even after a lower-ranked candidate is picked and a note becomes required.</p>
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: PR #3 labels the note “required for a lower-ranked candidate”, but the placeholder still reads “Optional context for this assignment…”. The field isn’t marked required, and focus after the error wasn’t rechecked.</p>
 <p style="font-size:32px;line-height:1.45"><b>Impact</b>: Schedulers find out only after clicking Approve. The dialog then jumps to the top and focus lands on the page body, away from the note.</p>
 <p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: When a non-top candidate is selected, label the note “Required” and mark it required. On error, move focus to the note.</p>
 </div>
@@ -146,7 +146,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <h2 style="position:absolute;left:560px;top:56px;width:1260px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">Scheduler: smaller notes</h2>
 <div style="position:absolute;left:96px;top:270px;width:1728px;display:flex;flex-direction:column;gap:36px">
 <p style="font-size:32px;line-height:1.45"><b>Focus ring clipped</b>: on the “Needs your attention” rows, only the top and bottom edges of the outline show.</p>
-<p style="font-size:32px;line-height:1.45"><b>Hidden actions at 375px</b>: Review and Manage are off-screen in the tables until you swipe sideways, with no hint that you can.</p>
+<p style="font-size:32px;line-height:1.45"><b>Hidden actions at 375px</b>: Review and Manage are off-screen in the tables until you swipe sideways. Fixed in PR #3: tables become stacked cards on phones.</p>
 </div>
 
 </section>
@@ -195,13 +195,13 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#C9A227"></div>
 <div style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#C9A227;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></div>
 <p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#2A2410">Low</p>
-<p style="position:absolute;left:64px;top:160px;width:840px;font-size:24px;letter-spacing:0.12em;text-transform:uppercase;color:#D9C3B5">Professor view</p>
+<p style="position:absolute;left:64px;top:160px;width:840px;font-size:24px;letter-spacing:0.12em;text-transform:uppercase;color:#D9C3B5">Professor view · fixed in PR #3</p>
 <h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“Where did the clock go?”</h2>
 <img src="../qa-screenshots/08-preferences-320px-clipped.png" alt="My preferences at 320 pixels wide: the end-time fields in Hard availability show the time but the clock icon is cut off at the right edge" style="object-position:50% 55%;position:absolute;left:280px;top:400px;width:400px;height:600px;object-fit:cover;border:2px solid #5A6478">
 <div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
-<p style="font-size:32px;line-height:1.45"><b>Cause</b>: At 320px wide, each time row is 321px wide inside a 282px panel set to <i>overflow: hidden</i>. The end-time fields are cut off on the right, so their clock icon is hidden and there is no way to scroll to it.</p>
-<p style="font-size:32px;line-height:1.45"><b>Impact</b>: The end time itself is still readable, but the field looks broken. On a small phone, or zoomed to 400% (the WCAG reflow test), it is a visible polish problem, not a blocker.</p>
-<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: Below about 360px, stack start and end on separate lines. Add a test that checks for clipped content, not just page scroll.</p>
+<p style="font-size:32px;line-height:1.45"><b>Was</b>: At 320px wide, each time row is 321px wide inside a 282px panel set to <i>overflow: hidden</i>. The end-time fields are cut off on the right, so their clock icon is hidden and there is no way to scroll to it.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact before</b>: The end time itself is still readable, but the field looks broken. On a small phone, or zoomed to 400% (the WCAG reflow test), it is a visible polish problem, not a blocker.</p>
+<p style="font-size:32px;line-height:1.45"><b>Now</b>: PR #3 wraps the time rows on phones and adds an element-level clipping test. An Android emulator (412px, font scale 2.0) showed no clipping; that is wider than 320px, so the new test covers 320px.</p>
 <p style="font-size:28px;line-height:1.45;color:#5F646C">Steps: 320px width → Professor view → My preferences. Fine at 375px.</p>
 </div>
 
@@ -267,7 +267,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <h2 style="position:absolute;left:560px;top:56px;width:1260px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">App-wide: smaller notes</h2>
 <div style="position:absolute;left:96px;top:270px;width:1728px;display:flex;flex-direction:column;gap:36px">
 <p style="font-size:32px;line-height:1.45"><b>README is out of date</b>: it says local tests use Microsoft Edge, but this branch runs bundled Chromium, Firefox and WebKit.</p>
-<p style="font-size:32px;line-height:1.45"><b>Reload resets the role</b>: the app always reopens in Scheduler view, so every check needs the professor picked again.</p>
+<p style="font-size:32px;line-height:1.45"><b>Reload resets the role</b>: the app always reopened in Scheduler view. Fixed in PR #3: a first-visit role picker remembers the role.</p>
 </div>
 
 </section>
@@ -281,7 +281,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <p style="font-size:32px;line-height:1.45"><b>Test</b>: “availability window ending before it starts is rejected and not saved”, in tests/browser/journey.spec.ts.</p>
 <p style="font-family:'Courier New', monospace;font-size:26px;line-height:1.5;color:#EDE3DC;background:#2F3749;padding:28px;border-radius:12px">npx playwright test -g "availability window ending"<br>✓ chromium (1.1s)<br>✓ webkit (1.4s)<br>✓ firefox (1.7s)<br>3 passed (3.3s)</p>
 <p style="font-size:32px;line-height:1.45"><b>It can fail</b>: with the start-before-end rule removed from src/matching.ts, it fails. The error message never appears.</p>
-<p style="font-size:32px;line-height:1.45"><b>Full suite</b>: 20 passed, 1 failed (the Firefox flake).</p>
+<p style="font-size:32px;line-height:1.45"><b>PR #3 adds</b>: mobile.spec.ts (Pixel 7 and iPhone 14: clipping, 44px targets, 200% text) and an Android font-scale test. All 33 Playwright tests passed in one run of the PR branch, including the old Firefox flake.</p>
 </div>
 
 </section>
@@ -291,7 +291,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 <h2 style="position:absolute;left:96px;top:56px;width:1600px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">What I couldn’t do</h2>
 <div style="position:absolute;left:96px;top:270px;width:1728px;display:flex;flex-direction:column;gap:36px">
 <p style="font-size:32px;line-height:1.45"><b>Microsoft Edge</b>: the task notes say local tests use Edge, but this branch’s config no longer does. Nothing ran in Edge.</p>
-<p style="font-size:32px;line-height:1.45"><b>Narrow width in real Chrome</b>: the browser window wouldn’t resize, so 320px and 375px were tested in Playwright Chromium instead.</p>
+<p style="font-size:32px;line-height:1.45"><b>Narrow width in real Chrome</b>: the window wouldn’t resize, so 320px and 375px ran in Playwright Chromium. An Android emulator later covered the scheduler views only; real iOS Dynamic Type is unverified.</p>
 <p style="font-size:32px;line-height:1.45"><b>CSV export by hand</b>: not clicked, because it downloads a file. The existing automated test covers it.</p>
 <p style="font-size:32px;line-height:1.45"><b>Screen reader</b>: no VoiceOver pass. Labels and focus were only checked by script.</p>
 <p style="font-size:32px;line-height:1.45"><b>Firefox flake</b>: the root cause wasn’t found within the time box.</p>
@@ -308,7 +308,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
 <h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Reflow at 320px</h3>
-<p style="font-size:26px;line-height:1.45">A test that looks for clipped content, not just page-level scroll.</p>
+<p style="font-size:26px;line-height:1.45">PR #3 adds an element-level clipping test. Keep it running.</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
 <h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Colorblindness</h3>
@@ -324,7 +324,7 @@ th { font-weight: 700; color: #2F3749; border-bottom: 2px solid #2F3749; }
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FBFBF8;padding:36px;border-radius:12px">
 <h3 style="font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Screen reader and targets</h3>
-<p style="font-size:26px;line-height:1.45">A VoiceOver pass, and touch targets of at least 24×24px.</p>
+<p style="font-size:26px;line-height:1.45">A VoiceOver pass, and touch targets of at least 44px (24px is the WCAG floor).</p>
 </div>
 </div>
 
