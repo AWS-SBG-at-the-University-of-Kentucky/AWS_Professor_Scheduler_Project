@@ -122,6 +122,6 @@ The findings come from real test runs and screenshots taken during this session,
 ## Update after PR #3 (phone-and-landing)
 Checked against the PR branch (open, not merged). Dates and numbers above describe the original build.
 - **Fixed:** text size (all font sizes in rem, none left in px, tested at 200% text), 320px clipping (time rows wrap, element-level clipping test), stacked table cards instead of hidden actions at 375px, role remembered after reload, 44px tap-target minimum.
-- **Still open:** validation errors don't name the field (no `aria-invalid`), decision-note placeholder still says "Optional" although the label says required, README still names Edge.
-- **Not rechecked:** focus ring clipping, unchecked days looking editable, Firefox flake root cause (33/33 passed in one run).
+- **Still open (checked in the source at `c5706a8`, the PR head):** validation errors don't name the field (no `aria-invalid`), decision-note placeholder still says "Optional" and focus is never moved to it, README still names Edge, the `.panel` still has `overflow:hidden` so the focus ring on attention rows is likely still clipped, and unchecked days' time inputs are not disabled.
+- **Tests:** first full run of the PR branch, 29 of 35 passed and 6 failed (a11y, journey, validation, 200% text); all 6 passed on rerun. The cause was not found and the machine was busy. The old Firefox competing-approvals flake did not fail in that run.
 - **Not verified:** real iOS Dynamic Type; Android emulator run (412px, font scale 2.0) covered scheduler views only.
