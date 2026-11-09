@@ -53,6 +53,8 @@ Manual checks were done in Chrome, scripted checks in Playwright Chromium, Firef
 - **Expected:** Body text around 14–16px or larger, and text grows when the user raises the browser's default size.
 - **Actual:** 564 of 579 text elements on Course sections are under 12px. `styles.css` sets 8px ×4, 9px ×10, 10px ×24 and 11px ×26. A table cell stays at 11px even when the default size is doubled. Page zoom still works. Matches the first-impressions note that "the text is tiny".
 
+**Update (fixed by merging `phone-and-landing`):** Text is now in `rem` and the root size follows iOS Dynamic Type (`font:-apple-system-body`). The old 200% test passed without testing anything (it only changed the root size, which `px` text ignored). It is now two tests (130% and 200% at 320px) that first assert the text really grew, then check clipping and axe. Checked in the iOS Simulator (iPhone 16, Mobile Safari) at accessibility sizes: text scales and the layout wraps. One clipped tagline on the role picker was fixed. **Still untested:** a physical iPhone, and Android font scale (no emulator set up).
+
 ### 5. Firefox competing-approvals test is flaky (test issue, data is safe)
 - **Steps:** Run `npm run test:e2e` (all three browsers together) a few times.
 - **Expected:** 18/18 pass.
