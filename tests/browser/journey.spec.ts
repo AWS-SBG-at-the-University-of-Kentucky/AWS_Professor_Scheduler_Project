@@ -59,6 +59,18 @@ test('validation, recoverable failure, no-match and reset', async ({ page }) => 
   await page.getByRole('button', { name: 'Reset demo data' }).click();
   await expect(page.locator('#toast')).toContainText('Demo reset');
 });
+test('availability window ending before it starts is rejected and not saved', async ({ page }) => {
+  await page.goto('/');
+  await page.getByLabel('Demo role').selectOption('faculty');
+  await page.getByRole('button', { name: 'My preferences', exact: true }).click();
+  await page.locator('[name="available-Tue-end"]').fill('08:00');
+  await page.getByRole('button', { name: 'Submit preferences' }).click();
+  await expect(page.getByRole('alert')).toContainText('valid start time before its end time');
+  await page.reload();
+  await page.getByLabel('Demo role').selectOption('faculty');
+  await page.getByRole('button', { name: 'My preferences', exact: true }).click();
+  await expect(page.locator('[name="available-Tue-end"]')).toHaveValue('16:00');
+});
 test('competing review tabs cannot double-approve the same section', async ({ page, context }) => {
   const other = await context.newPage();
   for (const tab of [page, other]) {
@@ -71,13 +83,14 @@ test('competing review tabs cannot double-approve the same section', async ({ pa
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('facultyplan.demo.v1')!));
   expect(saved.assignments.filter((a: { sectionId: string }) => a.sectionId === 'SEC-002')).toHaveLength(1);
 });
-test('mobile layout, keyboard navigation and empty searches', async ({ page }) => {
+test('mobile layout, keyboard navigation and empty searches', async ({ page, browserName }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
   await expect(page.getByRole('heading', { name: 'A clear view of the semester.' })).toBeVisible();
   await page.screenshot({ path: 'test-results/overview-mobile.png', fullPage: true });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await page.keyboard.press('Tab');
+  // Safari only tabs to links with Option+Tab unless the user changes a setting.
+  await page.keyboard.press(browserName === 'webkit' ? 'Alt+Tab' : 'Tab');
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('#main')).toBeFocused();
