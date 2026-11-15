@@ -18,7 +18,7 @@ test('professor preferences → scheduler approval → persisted professor sched
   const row = page.getByRole('row').filter({ hasText: 'CS 101 · 002' });
   await row.getByRole('button', { name: 'Review' }).click();
   await page.screenshot({ path: 'test-results/recommendations-desktop.png', fullPage: true });
-  const selectedName = (await page.locator('.candidate').filter({ has: page.locator('input:checked') }).locator('.candidate-detail > strong').innerText()).replace('Top match', '').trim();
+  const selectedName = (await page.locator('.candidate').filter({ has: page.locator('input:checked') }).locator('.candidate-detail > strong').innerText()).replace('Top match', '').replace(/[.\s]+$/, '').trim();
   await page.getByRole('button', { name: 'Approve assignment', exact: true }).click();
   await expect(page.locator('#toast')).toContainText('Assignment approved');
   await page.reload();
