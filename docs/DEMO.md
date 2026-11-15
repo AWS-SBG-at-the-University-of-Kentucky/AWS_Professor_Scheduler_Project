@@ -2,8 +2,8 @@
 
 ## Five-minute walkthrough
 
-1. Start the app and select **Reset demo → Reset demo data**. The scheduler sees 25 faculty, 60 sections, 19 submitted preferences, and 12 approved assignments.
-2. Choose **Professor view**, select **Maya Chen**, and open **My preferences**. Keep the initial rankings and availability, then choose **Submit preferences**.
+1. Start the app and select **Reset demo → Reset demo data**. Choose **Continue as scheduler** on the first-visit role picker (the choice is remembered; switch any time with the role selector). The scheduler sees 25 faculty, 60 sections, 19 submitted preferences, and 12 approved assignments.
+2. Choose **Professor view** (or pick Professor on the role picker), select **Maya Chen**, and open **My preferences**. Keep the initial rankings and availability, then choose **Submit preferences**.
 3. Switch to **Scheduler view** and open **Course sections**. Find **CS 101 · 002**, click **Review**, and read the ranking explanations. The initial top candidate is **Elena Petrova**.
 4. Approve the top candidate. Selecting a different eligible candidate requires a decision note. Approval updates the assignment, credit load, and history together.
 5. Switch to **Professor view**, choose the professor just assigned, and open **My schedule**. Compare Week and List. Reload, select the professor again, and confirm the assignment remains.
