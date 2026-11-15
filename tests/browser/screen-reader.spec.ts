@@ -52,3 +52,14 @@ test('role picker logo is not a link and the title resets', async ({ context, pa
   await expect(page.getByRole('link', { name: 'FacultyPlan' })).toHaveCount(0);
   await expect(page).toHaveTitle('FacultyPlan · Professor Scheduler');
 });
+
+test('section editor day checkboxes are named "Meeting", not "Preferred"', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Review CS 101 section 002' }).click();
+  await page.getByRole('button', { name: 'Edit section information' }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.getByRole('checkbox', { name: 'Meeting Tue' })).toBeVisible();
+  await expect(dialog.getByRole('checkbox', { name: 'Meeting Thu' })).toBeVisible();
+  await expect(dialog.getByRole('checkbox', { name: /Preferred|Available/ })).toHaveCount(0);
+  await expect(dialog.getByLabel('meeting Tue start')).toBeVisible();
+});
