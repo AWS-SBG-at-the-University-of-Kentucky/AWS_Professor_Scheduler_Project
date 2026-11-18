@@ -143,4 +143,19 @@ select{-webkit-appearance:none;appearance:none;padding-right:2.2rem;background:#
 .search-input .icon{top:50%;transform:translateY(-50%);pointer-events:none}
 .clear-filters .icon{width:.875rem;height:.875rem}
 .empty .clear-filters{margin-top:1rem}
-@media(max-width:43.75em){.table-toolbar select{flex:1 1 9rem;min-width:0}#section-time{flex-basis:100%}.table-toolbar .clear-filters{flex:1 1 auto}}
+@media(max-width:43.75em){.table-toolbar select{flex:1 1 9rem;min-width:0}}
+/* Section day/time filters: checkbox groups whose whole label is a 44px target. */
+.filter-groups{flex:1 0 100%;min-width:0;display:flex;flex-wrap:wrap;align-items:flex-end;gap:.75rem 1.5rem}
+.check-group{border:0;margin:0;padding:0;min-width:0}
+.check-group legend{padding:0;margin-bottom:.375rem;font-size:.8125rem;font-weight:600;color:#536781}
+.check-options{display:flex;flex-wrap:wrap;gap:.375rem}
+.check-option{display:inline-flex;align-items:center;justify-content:center;gap:.4375rem;min-height:max(2.75rem,44px);min-width:max(2.75rem,44px);padding:.375rem .75rem;border:1px solid #dce3ed;border-radius:.4375rem;background:#fff;color:#3c506d;font-size:.875rem;line-height:1.25;cursor:pointer;user-select:none;transition:background .15s,border-color .15s}
+.check-option:hover{background:#f0f5fe;border-color:#becce1}
+.check-option:has(input:checked){background:#eaf1fd;border-color:#91b2e6;color:#23508e}
+@supports selector(:has(*)){.check-option:has(input:focus-visible){outline:.1875rem solid #6d96ef;outline-offset:.125rem}.check-option input:focus-visible{outline:none}}
+@media(max-width:43.75em){
+  .filter-groups{display:grid;gap:.875rem}
+  .check-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(2.75rem,100%),1fr))}
+  #section-time .check-options{grid-template-columns:repeat(auto-fit,minmax(min(5.5rem,100%),1fr))}
+  .check-option{flex-direction:column;gap:.25rem;padding:.375rem .25rem;min-width:0;text-align:center;overflow-wrap:anywhere}
+}
