@@ -99,12 +99,76 @@ test('mobile layout, keyboard navigation and empty searches', async ({ page, bro
   await page.keyboard.press('Enter');
   await expect(page.locator('#main')).toBeFocused();
   await page.getByRole('button', { name: 'Course sections', exact: false }).click();
+  await page.getByLabel('Meeting days').selectOption('tth');
   await page.getByLabel('Search sections').fill('There is no such course');
   await expect(page.getByRole('heading', { name: 'No sections found' })).toBeVisible();
+  await expect(page.locator('.empty')).toContainText('No sections match search “There is no such course” and Days: Tue-Thu.');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.locator('.empty').getByRole('button', { name: 'Clear filters' }).click();
+  await expect(page.locator('.result-count')).toHaveText('60 sections');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByLabel('Demo role').selectOption('faculty');
   await page.getByRole('button', { name: 'My preferences', exact: true }).click();
   await page.screenshot({ path: 'test-results/preferences-mobile.png', fullPage: true });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+test('section search matches days, times, professors and displayed labels; filters combine and clear', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Course sections', exact: false }).click();
+  const search = page.getByLabel('Search sections');
+  const rows = page.locator('tbody tr');
+  const count = page.locator('.result-count');
+  const clear = page.locator('.table-toolbar').getByRole('button', { name: 'Clear filters' });
+  await expect(count).toHaveText('60 sections');
+  await expect(clear).toHaveCount(0);
+  // The search icon sits inside the input's left padding, not over the text.
+  const padding = await search.evaluate(el => parseFloat(getComputedStyle(el).paddingLeft));
+  const iconRight = await page.locator('.search-input .icon').evaluate(el => el.getBoundingClientRect().right - el.parentElement!.getBoundingClientRect().left);
+  expect(padding).toBeGreaterThan(iconRight);
+
+  await search.fill('Tue');
+  await expect(count).toHaveText('24 sections');
+  for (const text of await rows.locator('.meeting').allInnerTexts()) expect(text).toContain('Tue');
+  await search.fill('09:00');
+  await expect(rows.first()).toContainText('09:00');
+  await search.fill('Maya');
+  await expect(count).toHaveText('1 section');
+  await expect(rows).toContainText(['CS 101 · 001']);
+  await search.fill('CS 101 · 002');
+  await expect(count).toHaveText('1 section');
+  await expect(rows).toContainText(['CS 101 · 002']);
+  await search.fill('cs 101   002');
+  await expect(count).toHaveText('1 section');
+  await expect(search).toBeFocused();
+  await expect(clear).toBeVisible();
+
+  await search.fill('');
+  await expect(clear).toHaveCount(0);
+  await page.getByLabel('Meeting days').selectOption('mwf');
+  await expect(page.getByLabel('Meeting days')).toBeFocused();
+  await expect(count).toHaveText('36 sections');
+  for (const text of await rows.locator('.meeting').allInnerTexts()) { expect(text).toContain('Mon / Wed / Fri'); expect(text).not.toContain('Tue'); }
+  await page.getByLabel('Start time').selectOption('afternoon');
+  await expect(page.getByLabel('Start time')).toBeFocused();
+  for (const text of await rows.locator('.meeting').allInnerTexts()) expect(Number(text.match(/(\d\d):\d\d/)![1])).toBeGreaterThanOrEqual(12);
+  await page.getByLabel('Section status').selectOption('unassigned');
+  await search.fill('CS 101');
+  await expect(rows).not.toHaveCount(0);
+
+  await clear.click();
+  await expect(search).toBeFocused();
+  await expect(search).toHaveValue('');
+  await expect(page.getByLabel('Section status')).toHaveValue('all');
+  await expect(page.getByLabel('Meeting days')).toHaveValue('all');
+  await expect(page.getByLabel('Start time')).toHaveValue('any');
+  await expect(count).toHaveText('60 sections');
+  await expect(clear).toHaveCount(0);
+
+  // Filters are page state: leaving the page resets them.
+  await page.getByLabel('Meeting days').selectOption('tth');
+  await page.getByRole('button', { name: 'Overview', exact: true }).click();
+  await page.getByRole('button', { name: 'Course sections', exact: false }).click();
+  await expect(page.getByLabel('Meeting days')).toHaveValue('all');
 });
 test('main views and recommendation dialog pass automated accessibility checks', async ({ page }) => {
   await page.goto('/');

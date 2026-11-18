@@ -138,3 +138,9 @@ select{-webkit-appearance:none;appearance:none;padding-right:2.2rem;background:#
 .nav-item,.button,.button.compact,.progress-panel .button,.page-heading>.button,.prototype-bar button,.text-button,.segmented button,
 .identity-controls select,.time-row input[type=time],input:not([type=checkbox]):not([type=radio]),select{min-height:44px}
 @media(max-width:700px){.nav-item{padding-bottom:13px}}
+/* Section search: the general input padding rule outranks ".search-input input", so restate the icon gap at higher specificity (padding only, so the phone font-size rule still applies). */
+.search-input input:not([type=checkbox]):not([type=radio]){padding-left:2.25rem}
+.search-input .icon{top:50%;transform:translateY(-50%);pointer-events:none}
+.clear-filters .icon{width:.875rem;height:.875rem}
+.empty .clear-filters{margin-top:1rem}
+@media(max-width:43.75em){.table-toolbar select{flex:1 1 9rem;min-width:0}#section-time{flex-basis:100%}.table-toolbar .clear-filters{flex:1 1 auto}}

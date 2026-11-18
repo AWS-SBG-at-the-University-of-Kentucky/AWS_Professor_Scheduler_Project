@@ -18,6 +18,8 @@ let identity: Identity = storedIdentity() ?? { role: 'scheduler', facultyId: 'FA
 let page = 'overview';
 let query = '';
 let sectionFilter = 'all';
+let dayFilter = 'all';
+let timeFilter = 'any';
 let scheduleMode = window.matchMedia('(max-width:43.75em)').matches ? 'list' : 'week';
 let scheduleFaculty = 'FAC-001';
 let busy = false;
@@ -40,6 +42,7 @@ const iconPaths: Record<string, string> = {
   spark: '<path d="m12 3 2.3 6.7L21 12l-6.7 2.3L12 21l-2.3-6.7L3 12l6.7-2.3L12 3Z"/>',
   search: '<circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/>',
   shield: '<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/>',
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
 };
 const icon = (name: string, cls = '') => `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[name] || iconPaths.grid}</svg>`;
 const badge = (text: string, color = '') => `<span class="badge ${color}"><span class="dot"></span>${e(text)}</span>`;
@@ -102,13 +105,38 @@ function sectionTable(sections: Section[], scheduler: boolean) {
     return `<tr><td data-label="Course / section"><strong>${e(s.courseId)} <span class="section-number">· ${s.number}</span></strong><span class="cell-sub">${e(course(s).name)}</span></td><td data-label="Meeting times"><span class="meeting">${e(meetingText(s))}</span><span class="cell-sub">${course(s).credits} credits · ${s.seats} seats</span></td><td data-label="${scheduler ? 'Faculty match' : 'Eligibility'}">${assignment ? `<div class="person-cell"><span class="avatar tiny">${person(assignment.facultyId).initials}</span>${e(person(assignment.facultyId).name)}</div>` : scheduler ? eligible.length ? `<span class="match-label">${icon('spark')} ${eligible.length} eligible faculty</span><span class="cell-sub">Top match: ${e(eligible[0].faculty.name)}</span>` : '<span class="muted">No eligible match</span>' : own.eligible ? '<span class="match-label">Eligible for you</span>' : `<span class="muted">${e(own.reasons[0])}</span>`}</td><td data-label="Status">${badge(assignment ? 'Approved' : 'Unassigned', assignment ? 'green' : 'amber')}</td><td class="action-cell">${scheduler ? `<button class="button compact ${assignment ? '' : 'soft'}" data-review="${s.id}">${assignment ? 'Manage' : 'Review'} ${icon('arrow')}</button>` : `<button class="text-button" data-review="${s.id}">Details</button>`}</td></tr>`;
   }).join('')}</tbody></table></div>`;
 }
+const STATUS_FILTERS: Record<string, string> = { all: 'All sections', unassigned: 'Unassigned', approved: 'Approved', 'no-match': 'No eligible match', eligible: 'Eligible for me' };
+const DAY_FILTERS: Record<string, string> = { all: 'All days', mwf: 'Mon-Wed-Fri', tth: 'Tue-Thu' };
+const DAY_PATTERNS: Record<string, string> = { mwf: 'Mon Wed Fri', tth: 'Tue Thu' };
+const TIME_FILTERS: Record<string, string> = { any: 'Any time', morning: 'Morning (before 12:00)', afternoon: 'Afternoon (12:00 or later)' };
+// "CS 101 · 002", "CS 101 002" and "Mon / Wed" vs "Mon Wed" should all match the same way, so both sides are normalized.
+const searchText = (text: string) => text.toLowerCase().replace(/[·/]/g, ' ').replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim();
+function sectionSearchText(s: Section) {
+  const assignment = state.assignments.find(a => a.sectionId === s.id);
+  return searchText([`${s.courseId} ${s.number} ${course(s).name}`, meetingText(s), assignment ? person(assignment.facultyId).name : ''].join(' | '));
+}
+const dayPattern = (s: Section) => DAYS.filter(day => s.meetings.some(m => m.day === day)).join(' ');
+const startsAt = (s: Section) => Math.min(...s.meetings.map(m => minutes(m.start)));
+const filterOptions = (filters: Record<string, string>, keys: string[], current: string) => keys.map(key => `<option value="${key}" ${key === current ? 'selected' : ''}>${e(filters[key])}</option>`).join('');
+function activeSectionFilters() {
+  const search = query.trim();
+  return [search && `search “${search}”`, sectionFilter !== 'all' && `Status: ${STATUS_FILTERS[sectionFilter]}`, dayFilter !== 'all' && `Days: ${DAY_FILTERS[dayFilter]}`, timeFilter !== 'any' && `Time: ${TIME_FILTERS[timeFilter]}`].filter((part): part is string => Boolean(part));
+}
+const listText = (parts: string[]) => parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0];
 function sectionsPage() {
   const scheduler = identity.role === 'scheduler';
+  const needle = searchText(query);
   const filtered = state.sections.filter(s => {
     const assigned = state.assignments.some(a => a.sectionId === s.id);
-    return `${s.courseId} ${s.number} ${course(s).name}`.toLowerCase().includes(query.toLowerCase()) && (sectionFilter === 'all' || sectionFilter === 'approved' && assigned || sectionFilter === 'unassigned' && !assigned || sectionFilter === 'eligible' && assess(state, s, person(identity.facultyId)).eligible || sectionFilter === 'no-match' && !assigned && !recommendations(state, s.id).some(c => c.eligible));
+    const statusMatch = sectionFilter === 'all' || sectionFilter === 'approved' && assigned || sectionFilter === 'unassigned' && !assigned || sectionFilter === 'eligible' && assess(state, s, person(identity.facultyId)).eligible || sectionFilter === 'no-match' && !assigned && !recommendations(state, s.id).some(c => c.eligible);
+    const dayMatch = dayFilter === 'all' || dayPattern(s) === DAY_PATTERNS[dayFilter];
+    const timeMatch = timeFilter === 'any' || s.meetings.length > 0 && (timeFilter === 'morning' ? startsAt(s) < 12 * 60 : startsAt(s) >= 12 * 60);
+    return statusMatch && dayMatch && timeMatch && sectionSearchText(s).includes(needle);
   });
-  return titleBlock('COURSE CATALOG', 'Find the right fit.', 'Browse fixed-time sections and review eligibility for the upcoming semester.', scheduler ? `<button class="button" data-action="export">${icon('download')} Export assignments</button>` : '') + `<section class="panel"><div class="table-toolbar"><div class="search-input">${icon('search')}<input id="section-search" aria-label="Search sections" placeholder="Search courses or sections…" value="${e(query)}"></div><label class="sr-only" for="section-filter">Section status</label><select id="section-filter"><option value="all">All sections</option><option value="unassigned" ${sectionFilter === 'unassigned' ? 'selected' : ''}>Unassigned</option><option value="approved" ${sectionFilter === 'approved' ? 'selected' : ''}>Approved</option>${scheduler ? `<option value="no-match" ${sectionFilter === 'no-match' ? 'selected' : ''}>No eligible match</option>` : `<option value="eligible" ${sectionFilter === 'eligible' ? 'selected' : ''}>Eligible for me</option>`}</select><span class="muted result-count">${filtered.length} sections</span></div>${sectionTable(filtered, scheduler)}</section>`;
+  const active = activeSectionFilters();
+  const clearButton = `<button type="button" class="button compact clear-filters" data-clear-filters>${icon('close')} Clear filters</button>`;
+  const results = filtered.length ? sectionTable(filtered, scheduler) : `<div class="empty">${icon('book')}<h3>No sections found</h3><p>${active.length ? `No sections match ${e(listText(active))}.` : 'Try another search or filter.'}</p>${active.length ? clearButton : ''}</div>`;
+  return titleBlock('COURSE CATALOG', 'Find the right fit.', 'Browse fixed-time sections and review eligibility for the upcoming semester.', scheduler ? `<button class="button" data-action="export">${icon('download')} Export assignments</button>` : '') + `<section class="panel"><div class="table-toolbar"><div class="search-input">${icon('search')}<input id="section-search" aria-label="Search sections" placeholder="Search courses, times or professors…" value="${e(query)}"></div><label class="sr-only" for="section-filter">Section status</label><select id="section-filter">${filterOptions(STATUS_FILTERS, ['all', 'unassigned', 'approved', scheduler ? 'no-match' : 'eligible'], sectionFilter)}</select><label class="sr-only" for="section-days">Meeting days</label><select id="section-days">${filterOptions(DAY_FILTERS, Object.keys(DAY_FILTERS), dayFilter)}</select><label class="sr-only" for="section-time">Start time</label><select id="section-time">${filterOptions(TIME_FILTERS, Object.keys(TIME_FILTERS), timeFilter)}</select>${active.length ? clearButton : ''}<span class="muted result-count">${filtered.length} ${filtered.length === 1 ? 'section' : 'sections'}</span></div>${results}</section>`;
 }
 function timeRows(name: string, windows: Meeting[]) {
   return DAYS.map(day => {
@@ -151,8 +179,9 @@ function welcome() {
   });
   app.querySelector<HTMLButtonElement>('[data-action="guide"]')!.onclick = () => action('guide');
 }
-function showUnassigned() { page = 'sections'; query = ''; sectionFilter = 'unassigned'; shell(); document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true }); window.scrollTo(0, 0); }
-function navigate(target: string) { page = target; query = ''; sectionFilter = 'all'; shell(); document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true }); window.scrollTo(0, 0); }
+function resetSectionFilters(status = 'all') { query = ''; sectionFilter = status; dayFilter = 'all'; timeFilter = 'any'; }
+function showUnassigned() { page = 'sections'; resetSectionFilters('unassigned'); shell(); document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true }); window.scrollTo(0, 0); }
+function navigate(target: string) { page = target; resetSectionFilters(); shell(); document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true }); window.scrollTo(0, 0); }
 function modal(title: string, body: string) {
   dialog.innerHTML = `<div class="dialog-header"><div class="eyebrow">${TERM} · COMPUTER SCIENCE</div><button class="close-dialog" aria-label="Close dialog">×</button><h2 id="dialog-title">${title}</h2></div><div class="dialog-body">${body}</div>`;
   dialog.querySelector('.close-dialog')!.addEventListener('click', () => dialog.close());
@@ -236,8 +265,15 @@ function bind() {
   app.querySelectorAll<HTMLButtonElement>('[data-faculty]').forEach(b => b.onclick = () => editFaculty(b.dataset.faculty!));
   const search = app.querySelector<HTMLInputElement>('#section-search');
   if (search) search.oninput = () => { const position = search.selectionStart; query = search.value; shell(); const next = app.querySelector<HTMLInputElement>('#section-search')!; next.focus(); next.setSelectionRange(position, position); };
-  const filter = app.querySelector<HTMLSelectElement>('#section-filter');
-  if (filter) filter.onchange = () => { sectionFilter = filter.value; shell(); app.querySelector<HTMLElement>('#section-filter')?.focus(); };
+  const bindFilter = (id: string, set: (value: string) => void) => {
+    const select = app.querySelector<HTMLSelectElement>(`#${id}`);
+    if (select) select.onchange = () => { set(select.value); shell(); app.querySelector<HTMLElement>(`#${id}`)?.focus(); };
+  };
+  bindFilter('section-filter', value => sectionFilter = value);
+  bindFilter('section-days', value => dayFilter = value);
+  bindFilter('section-time', value => timeFilter = value);
+  // The clear button disappears once filters are reset, so move focus to the search box instead of losing it.
+  app.querySelectorAll<HTMLButtonElement>('[data-clear-filters]').forEach(b => b.onclick = () => { resetSectionFilters(); shell(); app.querySelector<HTMLElement>('#section-search')?.focus(); });
   const scheduleSelect = app.querySelector<HTMLSelectElement>('#schedule-faculty');
   if (scheduleSelect) scheduleSelect.onchange = () => { scheduleFaculty = scheduleSelect.value; shell(); };
   app.querySelectorAll<HTMLButtonElement>('[data-schedule-mode]').forEach(b => b.onclick = () => { scheduleMode = b.dataset.scheduleMode!; shell(); });
