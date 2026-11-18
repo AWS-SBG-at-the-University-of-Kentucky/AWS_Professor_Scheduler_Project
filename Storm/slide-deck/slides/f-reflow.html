@@ -1,0 +1,16 @@
+<section id="f-reflow" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#C9A227"></div>
+<x-shape kind="diamond" style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#C9A227"></x-shape>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#2A2410">Low</p>
+<p style="position:absolute;left:64px;top:160px;width:840px;font-size:24px;letter-spacing:0.12em;text-transform:uppercase;color:#D9C3B5">Professor view · fixed in PR #3</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“Where did the clock go?”</h2>
+<img src="/_blob/39c2476d4fa30dbb1765b9d7caf8f0ca" alt="My preferences at 320 pixels wide: the end-time fields in Hard availability show the time but the clock icon is cut off at the right edge" data-crop="1 50% 55%" style="position:absolute;left:280px;top:400px;width:400px;height:600px;object-fit:cover;border:2px solid #5A6478">
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Was</b>: At 320px wide, each time row is 321px wide inside a 282px panel set to <i>overflow: hidden</i>. The end-time fields are cut off on the right, so their clock icon is hidden and there is no way to scroll to it.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact before</b>: The end time itself is still readable, but the field looks broken. On a small phone, or zoomed to 400% (the WCAG reflow test), it is a visible polish problem, not a blocker.</p>
+<p style="font-size:32px;line-height:1.45"><b>Now</b>: PR #3 wraps the time rows on phones and adds an element-level clipping test. An Android emulator (412px, font scale 2.0) showed no clipping; that is wider than 320px, so the new test covers 320px.</p>
+<p style="font-size:28px;line-height:1.45;color:#5F646C">Steps: 320px width → Professor view → My preferences. Fine at 375px.</p>
+</div>
+<aside>The existing mobile test runs at 390px and only checks document scroll width, so clipping by overflow:hidden never shows up there.</aside>
+</section>

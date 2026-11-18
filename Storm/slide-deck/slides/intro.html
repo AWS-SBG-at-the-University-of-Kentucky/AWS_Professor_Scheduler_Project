@@ -1,0 +1,12 @@
+<section id="intro" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:880px;height:1080px;background:#2F3749"></div>
+<x-connector x1="0" y1="900" x2="880" y2="640" head="none" style="color:#D9C3B5;border-width:6px"></x-connector>
+<h2 style="position:absolute;left:96px;top:128px;width:720px;font-family:Merriweather, Georgia, serif;font-size:72px;font-weight:400;line-height:1.2;color:#FBFBF8">Introduction to the study</h2>
+<div style="position:absolute;left:992px;top:128px;width:800px;display:flex;flex-direction:column;gap:36px">
+<p style="font-size:32px;line-height:1.45"><i>FacultyPlan</i> is a local prototype. Professors submit teaching preferences; a scheduler reviews ranked recommendations and approves assignments.</p>
+<p style="font-size:32px;line-height:1.45">Reviewed: branch <b>playwright-multi-browser-setup</b>, commit c306290. Re-checked against PR #3.</p>
+<p style="font-size:32px;line-height:1.45">Goal: make setup and the core demo repeatable, and find the most useful repairs.</p>
+<p style="font-size:32px;line-height:1.45">Method: a fresh clone and <b>npm run check</b>, the DEMO.md walkthrough by hand in Chrome, and scripted checks in Chromium, Firefox and WebKit.</p>
+</div>
+<aside>Everything here uses the synthetic seed data. Manual checks were done in Chrome; anything Chrome couldn't do (narrow widths, colorblind simulation) was scripted with Playwright.</aside>
+</section>

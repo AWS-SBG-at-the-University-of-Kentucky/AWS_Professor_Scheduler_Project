@@ -1,0 +1,15 @@
+<section id="f-note" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#D2741C"></div>
+<x-shape kind="diamond" style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#D2741C"></x-shape>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#24160A">Medium</p>
+<p style="position:absolute;left:64px;top:160px;width:840px;font-size:24px;letter-spacing:0.12em;text-transform:uppercase;color:#D9C3B5">Scheduler view</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“But it said optional!”</h2>
+<img src="/_blob/b9f807f66a501ebf40820c887ca94456" alt="Review dialog for CS 101 section 002 with Priya Shah selected and the error: Add a reason for selecting a lower-ranked candidate" style="position:absolute;left:64px;top:440px;width:832px;height:420px;object-fit:contain;border:2px solid #5A6478">
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: PR #3 labels the note “required for a lower-ranked candidate”, but the placeholder still reads “Optional context for this assignment…”. The field isn’t marked required, and the code never moves focus to it after the error.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Schedulers find out only after clicking Approve. The dialog then jumps to the top and focus lands on the page body, away from the note.</p>
+<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: When a non-top candidate is selected, label the note “Required” and mark it required. On error, move focus to the note.</p>
+</div>
+<aside>Steps: Scheduler view → Course sections → CS 101 · 002 Review → select Priya Shah (#2) → Approve assignment with the note empty. The block itself works: nothing is saved.</aside>
+</section>

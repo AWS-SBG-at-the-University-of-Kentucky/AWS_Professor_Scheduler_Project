@@ -1,0 +1,15 @@
+<section id="f-validation" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:960px;height:1080px;background:#2F3749"></div>
+<div style="position:absolute;left:0;top:0;width:380px;height:150px;background:#D2741C"></div>
+<x-shape kind="diamond" style="position:absolute;left:305px;top:0;width:150px;height:150px;background:#D2741C"></x-shape>
+<p style="position:absolute;left:48px;top:40px;width:300px;font-size:48px;font-weight:300;line-height:1.3;color:#24160A">Medium</p>
+<p style="position:absolute;left:64px;top:160px;width:840px;font-size:24px;letter-spacing:0.12em;text-transform:uppercase;color:#D9C3B5">Professor view</p>
+<h2 style="position:absolute;left:64px;top:200px;width:840px;font-family:Merriweather, Georgia, serif;font-size:56px;font-weight:400;line-height:1.25;color:#FBFBF8">“Which time is wrong?”</h2>
+<img src="/_blob/6258c008462f7ca20a94873d284e19ae" alt="My preferences with Tuesday ending at 08:00 AM, and a generic red banner at the top: Every time window needs a valid start time before its end time" style="position:absolute;left:64px;top:440px;width:832px;height:420px;object-fit:contain;border:2px solid #5A6478">
+<div style="position:absolute;left:1040px;top:150px;width:760px;display:flex;flex-direction:column;gap:32px">
+<p style="font-size:32px;line-height:1.45"><b>Cause</b>: A time window that ends before it starts gets one generic banner at the top of the page. No field is highlighted or marked <i>aria-invalid</i>, and focus drops to the page body.</p>
+<p style="font-size:32px;line-height:1.45"><b>Impact</b>: Professors have to hunt through ten time fields. Keyboard and screen-reader users lose their place. (The bad value is correctly not saved.)</p>
+<p style="font-size:32px;line-height:1.45"><b>Suggestion</b>: Name the day in the message, mark and highlight that field, and move focus to it.</p>
+</div>
+<aside>Also: the time inputs’ screen-reader names are raw keys like “available Tue end”. Steps: Professor view → My preferences → set Tuesday’s end to 08:00 AM → Submit preferences.</aside>
+</section>

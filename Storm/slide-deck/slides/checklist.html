@@ -1,0 +1,31 @@
+<section id="checklist" style="background:#FBFBF8;color:#4A4F57;font-family:Roboto, Arial, sans-serif;padding:0">
+<div style="position:absolute;left:0;top:0;width:1920px;height:200px;background:#2F3749"></div>
+<h2 style="position:absolute;left:96px;top:56px;width:1200px;font-family:Merriweather, Georgia, serif;font-size:64px;font-weight:400;line-height:1.2;color:#FBFBF8">Demo checklist</h2>
+<p style="position:absolute;left:1180px;top:76px;width:640px;font-size:32px;line-height:1.4;text-align:right;color:#D9C3B5">13 pass · 1 flaky · 2 fixed in PR #3</p>
+<h3 style="position:absolute;left:96px;top:250px;width:820px;font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Setup and walkthrough</h3>
+<table style="position:absolute;left:96px;top:310px;width:820px;font-family:Roboto, Arial, sans-serif;font-size:28px;color:#4A4F57">
+<tr><th style="width:62%">Check</th><th style="width:38%">Result</th></tr>
+<tr><td>Fresh clone, npm ci</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>npm run check</td><td style="color:#1E6E52">Pass (23/23)</td></tr>
+<tr><td>Existing browser suite</td><td style="color:#8A5A00">Flaky (17/18)</td></tr>
+<tr><td>DEMO.md steps 1–6</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Preference → approval</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Lower-ranked needs a note</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Reload keeps assignment</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Activity & history</td><td style="color:#1E6E52">Pass</td></tr>
+</table>
+<h3 style="position:absolute;left:1004px;top:250px;width:820px;font-size:32px;font-weight:700;line-height:1.2;color:#2F3749">Edge cases and accessibility</h3>
+<table style="position:absolute;left:1004px;top:310px;width:820px;font-family:Roboto, Arial, sans-serif;font-size:28px;color:#4A4F57">
+<tr><th style="width:62%">Check</th><th style="width:38%">Result</th></tr>
+<tr><td>Invalid time window</td><td style="color:#1E6E52">Pass (blocked)</td></tr>
+<tr><td>No eligible match</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Hard-constraint protection</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Keyboard navigation</td><td style="color:#1E6E52">Pass*</td></tr>
+<tr><td>Width 375px</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Width 320px</td><td style="color:#8A5A00">Fixed in PR #3</td></tr>
+<tr><td>Colorblind simulation</td><td style="color:#1E6E52">Pass</td></tr>
+<tr><td>Text size</td><td style="color:#8A5A00">Fixed in PR #3</td></tr>
+</table>
+<p style="position:absolute;left:96px;top:976px;width:1728px;font-size:24px;line-height:1.4;color:#5F646C">* Keyboard: dialogs, skip link and focus return work, but focus is lost after form errors. CSV export is covered by the automated suite only.</p>
+<aside>The two fails and the flaky test are the next slides. Everything in the core preference-to-approval flow passed.</aside>
+</section>
