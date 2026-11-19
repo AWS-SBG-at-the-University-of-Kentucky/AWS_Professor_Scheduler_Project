@@ -1,5 +1,5 @@
 import './styles.css';
-import { DAYS, TERM, type State, type Identity, type Meeting, type Preference, type Section } from './domain';
+import { DAYS, TERM, type Day, type State, type Identity, type Meeting, type Preference, type Section } from './domain';
 import { assess, assignedCredits, minutes, recommendations } from './matching';
 import { assignmentsCsv, DemoError, LocalAdapter, STORAGE_KEY, type Command } from './store';
 
@@ -18,6 +18,8 @@ let identity: Identity = storedIdentity() ?? { role: 'scheduler', facultyId: 'FA
 let page = 'overview';
 let query = '';
 let sectionFilter = 'all';
+let dayFilter = new Set<Day>();
+let timeFilter = new Set<TimeRange>();
 let scheduleMode = window.matchMedia('(max-width:43.75em)').matches ? 'list' : 'week';
 let scheduleFaculty = 'FAC-001';
 let busy = false;
@@ -40,6 +42,7 @@ const iconPaths: Record<string, string> = {
   spark: '<path d="m12 3 2.3 6.7L21 12l-6.7 2.3L12 21l-2.3-6.7L3 12l6.7-2.3L12 3Z"/>',
   search: '<circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/>',
   shield: '<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/>',
+  close: '<path d="M6 6l12 12M18 6 6 18"/>',
 };
 const icon = (name: string, cls = '') => `<svg class="icon ${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[name] || iconPaths.grid}</svg>`;
 const badge = (text: string, color = '') => `<span class="badge ${color}"><span class="dot"></span>${e(text)}</span>`;
@@ -103,13 +106,42 @@ function sectionTable(sections: Section[], scheduler: boolean) {
     return `<tr><td data-label="Course / section"><strong>${e(s.courseId)} <span class="section-number">· ${s.number}</span></strong><span class="cell-sub">${e(course(s).name)}</span></td><td data-label="Meeting times"><span class="meeting">${e(meetingText(s))}</span><span class="cell-sub">${course(s).credits} credits · ${s.seats} seats</span></td><td data-label="${scheduler ? 'Faculty match' : 'Eligibility'}">${assignment ? `<div class="person-cell"><span class="avatar tiny">${person(assignment.facultyId).initials}</span>${e(person(assignment.facultyId).name)}</div>` : scheduler ? eligible.length ? `<span class="match-label">${icon('spark')} ${eligible.length} eligible faculty</span><span class="cell-sub">Top match: ${e(eligible[0].faculty.name)}</span>` : '<span class="muted">No eligible match</span>' : own.eligible ? '<span class="match-label">Eligible for you</span>' : `<span class="muted">${e(own.reasons[0])}</span>`}</td><td data-label="Status">${badge(assignment ? 'Approved' : 'Unassigned', assignment ? 'green' : 'amber')}</td><td class="action-cell">${scheduler ? `<button class="button compact ${assignment ? '' : 'soft'}" data-review="${s.id}" aria-label="${assignment ? 'Manage' : 'Review'} ${e(s.courseId)} section ${s.number}">${assignment ? 'Manage' : 'Review'} ${icon('arrow')}</button>` : `<button class="text-button" data-review="${s.id}" aria-label="Details for ${e(s.courseId)} section ${s.number}">Details</button>`}</td></tr>`;
   }).join('')}</tbody></table></div>`;
 }
+const STATUS_FILTERS: Record<string, string> = { all: 'All sections', unassigned: 'Unassigned', approved: 'Approved', 'no-match': 'No eligible match', eligible: 'Eligible for me' };
+// Start-time ranges in minutes after midnight: [from, to).
+const TIME_RANGES = { early: { label: 'Before 11am', from: 0, to: 11 * 60 }, midday: { label: '11am–2pm', from: 11 * 60, to: 14 * 60 }, late: { label: '2pm and later', from: 14 * 60, to: 24 * 60 } } as const;
+type TimeRange = keyof typeof TIME_RANGES;
+const TIME_KEYS = Object.keys(TIME_RANGES) as TimeRange[];
+// "CS 101 · 002", "CS 101 002" and "Mon / Wed" vs "Mon Wed" should all match the same way, so both sides are normalized.
+const searchText = (text: string) => text.toLowerCase().replace(/[·/]/g, ' ').replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim();
+function sectionSearchText(s: Section) {
+  const assignment = state.assignments.find(a => a.sectionId === s.id);
+  return searchText([`${s.courseId} ${s.number} ${course(s).name}`, meetingText(s), assignment ? person(assignment.facultyId).name : ''].join(' | '));
+}
+// Day and time are checked per meeting: a section matches if one meeting is on a checked day AND starts in a checked range.
+// An empty day set means any day; an empty time set means any time.
+const inTimeFilter = (m: Meeting) => timeFilter.size === 0 || [...timeFilter].some(key => minutes(m.start) >= TIME_RANGES[key].from && minutes(m.start) < TIME_RANGES[key].to);
+const meetsFilters = (s: Section) => dayFilter.size === 0 && timeFilter.size === 0 || s.meetings.some(m => (dayFilter.size === 0 || dayFilter.has(m.day)) && inTimeFilter(m));
+const filterOptions = (filters: Record<string, string>, keys: string[], current: string) => keys.map(key => `<option value="${key}" ${key === current ? 'selected' : ''}>${e(filters[key])}</option>`).join('');
+function activeSectionFilters() {
+  const search = query.trim();
+  const days = DAYS.filter(day => dayFilter.has(day)), times = TIME_KEYS.filter(key => timeFilter.has(key)).map(key => TIME_RANGES[key].label);
+  return [search && `search “${search}”`, sectionFilter !== 'all' && `Status: ${STATUS_FILTERS[sectionFilter]}`, days.length > 0 && `Meets on: ${days.join(' or ')}`, times.length > 0 && `Starts: ${times.join(' or ')}`].filter((part): part is string => Boolean(part));
+}
+// A fieldset of real checkboxes; the change handler in bind() re-renders and restores focus to the clicked box.
+const checkGroup = (id: string, legend: string, options: [string, string][], checked: ReadonlySet<string>) => `<fieldset class="check-group" id="${id}"><legend>${legend}</legend><div class="check-options">${options.map(([value, label]) => `<label class="check-option"><input type="checkbox" name="${id}" value="${value}" ${checked.has(value) ? 'checked' : ''}><span>${e(label)}</span></label>`).join('')}</div></fieldset>`;
+const listText = (parts: string[]) => parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}` : parts[0];
 function sectionsPage() {
   const scheduler = identity.role === 'scheduler';
+  const needle = searchText(query);
   const filtered = state.sections.filter(s => {
     const assigned = state.assignments.some(a => a.sectionId === s.id);
-    return `${s.courseId} ${s.number} ${course(s).name}`.toLowerCase().includes(query.toLowerCase()) && (sectionFilter === 'all' || sectionFilter === 'approved' && assigned || sectionFilter === 'unassigned' && !assigned || sectionFilter === 'eligible' && assess(state, s, person(identity.facultyId)).eligible || sectionFilter === 'no-match' && !assigned && !recommendations(state, s.id).some(c => c.eligible));
+    const statusMatch = sectionFilter === 'all' || sectionFilter === 'approved' && assigned || sectionFilter === 'unassigned' && !assigned || sectionFilter === 'eligible' && assess(state, s, person(identity.facultyId)).eligible || sectionFilter === 'no-match' && !assigned && !recommendations(state, s.id).some(c => c.eligible);
+    return statusMatch && meetsFilters(s) && sectionSearchText(s).includes(needle);
   });
-  return titleBlock('COURSE CATALOG', 'Find the right fit.', 'Browse fixed-time sections and review eligibility for the upcoming semester.', scheduler ? `<button class="button" data-action="export">${icon('download')} Export assignments</button>` : '') + `<section class="panel"><div class="table-toolbar"><div class="search-input">${icon('search')}<input id="section-search" aria-label="Search sections" placeholder="Search courses or sections…" value="${e(query)}"></div><label class="sr-only" for="section-filter">Section status</label><select id="section-filter"><option value="all">All sections</option><option value="unassigned" ${sectionFilter === 'unassigned' ? 'selected' : ''}>Unassigned</option><option value="approved" ${sectionFilter === 'approved' ? 'selected' : ''}>Approved</option>${scheduler ? `<option value="no-match" ${sectionFilter === 'no-match' ? 'selected' : ''}>No eligible match</option>` : `<option value="eligible" ${sectionFilter === 'eligible' ? 'selected' : ''}>Eligible for me</option>`}</select><span class="muted result-count">${filtered.length} sections</span></div>${sectionTable(filtered, scheduler)}</section>`;
+  const active = activeSectionFilters();
+  const clearButton = `<button type="button" class="button compact clear-filters" data-clear-filters>${icon('close')} Clear filters</button>`;
+  const results = filtered.length ? sectionTable(filtered, scheduler) : `<div class="empty">${icon('book')}<h3>No sections found</h3><p>${active.length ? `No sections match ${e(listText(active))}.` : 'Try another search or filter.'}</p>${active.length ? clearButton : ''}</div>`;
+  return titleBlock('COURSE CATALOG', 'Find the right fit.', 'Browse fixed-time sections and review eligibility for the upcoming semester.', scheduler ? `<button class="button" data-action="export">${icon('download')} Export assignments</button>` : '') + `<section class="panel"><div class="table-toolbar"><div class="search-input">${icon('search')}<input id="section-search" aria-label="Search sections" placeholder="Search courses, times or professors…" value="${e(query)}"></div><label class="sr-only" for="section-filter">Section status</label><select id="section-filter">${filterOptions(STATUS_FILTERS, ['all', 'unassigned', 'approved', scheduler ? 'no-match' : 'eligible'], sectionFilter)}</select><span class="muted result-count">${filtered.length} ${filtered.length === 1 ? 'section' : 'sections'}</span><div class="filter-groups">${checkGroup('section-days', 'Meets on', DAYS.map(day => [day, day]), dayFilter)}${checkGroup('section-time', 'Starts', TIME_KEYS.map(key => [key, TIME_RANGES[key].label]), timeFilter)}${active.length ? clearButton : ''}</div></div>${results}</section>`;
 }
 function timeRows(name: string, windows: Meeting[]) {
   const SR_PREFIX = `<span class="sr-only">${({ available: 'Available ', preferred: 'Preferred ', meeting: 'Meeting ' } as Record<string, string>)[name] ?? ''}</span>`;
@@ -154,8 +186,9 @@ function welcome() {
   });
   app.querySelector<HTMLButtonElement>('[data-action="guide"]')!.onclick = () => action('guide');
 }
-function showUnassigned() { page = 'sections'; query = ''; sectionFilter = 'unassigned'; shell(); document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true }); window.scrollTo(0, 0); }
-function navigate(target: string) { page = target; query = ''; sectionFilter = 'all'; shell(); document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true }); window.scrollTo(0, 0); }
+function resetSectionFilters(status = 'all') { query = ''; sectionFilter = status; dayFilter = new Set(); timeFilter = new Set(); }
+function showUnassigned() { page = 'sections'; resetSectionFilters('unassigned'); shell(); document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true }); window.scrollTo(0, 0); }
+function navigate(target: string) { page = target; resetSectionFilters(); shell(); document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true }); window.scrollTo(0, 0); }
 function modal(title: string, body: string) {
   dialog.innerHTML = `<div class="dialog-header"><div class="eyebrow">${TERM} · COMPUTER SCIENCE</div><button class="close-dialog" aria-label="Close dialog">×</button><h2 id="dialog-title">${title}</h2></div><div class="dialog-body">${body}</div>`;
   dialog.querySelector('.close-dialog')!.addEventListener('click', () => dialog.close());
@@ -248,8 +281,19 @@ function bind() {
   app.querySelectorAll<HTMLButtonElement>('[data-faculty]').forEach(b => b.onclick = () => editFaculty(b.dataset.faculty!));
   const search = app.querySelector<HTMLInputElement>('#section-search');
   if (search) search.oninput = () => { const position = search.selectionStart; query = search.value; shell(); const next = app.querySelector<HTMLInputElement>('#section-search')!; next.focus(); next.setSelectionRange(position, position); };
-  const filter = app.querySelector<HTMLSelectElement>('#section-filter');
-  if (filter) filter.onchange = () => { sectionFilter = filter.value; shell(); app.querySelector<HTMLElement>('#section-filter')?.focus(); };
+  const bindFilter = (id: string, set: (value: string) => void) => {
+    const select = app.querySelector<HTMLSelectElement>(`#${id}`);
+    if (select) select.onchange = () => { set(select.value); shell(); app.querySelector<HTMLElement>(`#${id}`)?.focus(); };
+  };
+  bindFilter('section-filter', value => sectionFilter = value);
+  const bindChecks = (id: string, toggle: (value: string, on: boolean) => void) => app.querySelectorAll<HTMLInputElement>(`#${id} input[type=checkbox]`).forEach(box => box.onchange = () => {
+    toggle(box.value, box.checked); shell(); app.querySelector<HTMLInputElement>(`#${id} input[value="${box.value}"]`)?.focus();
+  });
+  const toggle = <T,>(set: Set<T>, value: T, on: boolean) => { if (on) set.add(value); else set.delete(value); };
+  bindChecks('section-days', (value, on) => toggle(dayFilter, value as Day, on));
+  bindChecks('section-time', (value, on) => toggle(timeFilter, value as TimeRange, on));
+  // The clear button disappears once filters are reset, so move focus to the search box instead of losing it.
+  app.querySelectorAll<HTMLButtonElement>('[data-clear-filters]').forEach(b => b.onclick = () => { resetSectionFilters(); shell(); app.querySelector<HTMLElement>('#section-search')?.focus(); });
   const scheduleSelect = app.querySelector<HTMLSelectElement>('#schedule-faculty');
   if (scheduleSelect) scheduleSelect.onchange = () => { scheduleFaculty = scheduleSelect.value; shell(); };
   app.querySelectorAll<HTMLButtonElement>('[data-schedule-mode]').forEach(b => b.onclick = () => { scheduleMode = b.dataset.scheduleMode!; shell(); });
