@@ -116,7 +116,10 @@ function sectionSearchText(s: Section) {
   const assignment = state.assignments.find(a => a.sectionId === s.id);
   return searchText([`${s.courseId} ${s.number} ${course(s).name}`, meetingText(s), assignment ? person(assignment.facultyId).name : ''].join(' | '));
 }
-const startsAt = (s: Section) => Math.min(...s.meetings.map(m => minutes(m.start)));
+// Day and time are checked per meeting: a section matches if one meeting is on a checked day AND starts in a checked range.
+// An empty day set means any day; an empty time set means any time.
+const inTimeFilter = (m: Meeting) => timeFilter.size === 0 || [...timeFilter].some(key => minutes(m.start) >= TIME_RANGES[key].from && minutes(m.start) < TIME_RANGES[key].to);
+const meetsFilters = (s: Section) => dayFilter.size === 0 && timeFilter.size === 0 || s.meetings.some(m => (dayFilter.size === 0 || dayFilter.has(m.day)) && inTimeFilter(m));
 const filterOptions = (filters: Record<string, string>, keys: string[], current: string) => keys.map(key => `<option value="${key}" ${key === current ? 'selected' : ''}>${e(filters[key])}</option>`).join('');
 function activeSectionFilters() {
   const search = query.trim();
@@ -132,9 +135,7 @@ function sectionsPage() {
   const filtered = state.sections.filter(s => {
     const assigned = state.assignments.some(a => a.sectionId === s.id);
     const statusMatch = sectionFilter === 'all' || sectionFilter === 'approved' && assigned || sectionFilter === 'unassigned' && !assigned || sectionFilter === 'eligible' && assess(state, s, person(identity.facultyId)).eligible || sectionFilter === 'no-match' && !assigned && !recommendations(state, s.id).some(c => c.eligible);
-    const dayMatch = dayFilter.size === 0 || s.meetings.some(m => dayFilter.has(m.day));
-    const timeMatch = timeFilter.size === 0 || s.meetings.length > 0 && [...timeFilter].some(key => startsAt(s) >= TIME_RANGES[key].from && startsAt(s) < TIME_RANGES[key].to);
-    return statusMatch && dayMatch && timeMatch && sectionSearchText(s).includes(needle);
+    return statusMatch && meetsFilters(s) && sectionSearchText(s).includes(needle);
   });
   const active = activeSectionFilters();
   const clearButton = `<button type="button" class="button compact clear-filters" data-clear-filters>${icon('close')} Clear filters</button>`;

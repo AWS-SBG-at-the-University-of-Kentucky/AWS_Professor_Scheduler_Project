@@ -193,7 +193,7 @@ test('section search matches days, times, professors and displayed labels; filte
   await day('Thu').uncheck();
   await expect(count).toHaveText('60 sections');
 
-  // Times: a section matches if its earliest start falls in any checked range; the three ranges split all 60 sections.
+  // Times: a section matches if a meeting starts in any checked range; seed sections start at the same time every day, so the three ranges split all 60.
   await time('Before 11am').check();
   await expect(time('Before 11am')).toBeFocused();
   for (const hour of await startHours()) expect(hour).toBeLessThan(11);
@@ -253,6 +253,45 @@ test('section search matches days, times, professors and displayed labels; filte
   await page.getByRole('button', { name: /sections to assign/ }).click();
   await expect(page.getByLabel('Section status')).toHaveValue('unassigned');
   await expect(page.locator('.check-option input:checked')).toHaveCount(0);
+});
+test('day and time filters must match the same meeting, not separate ones', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Course sections', exact: false }).click();
+  // Give one unassigned section different times on different days: Mon 09:00 and Tue 15:00 only.
+  await page.getByRole('row').filter({ hasText: 'CS 101 · 002' }).getByRole('button', { name: 'Review' }).click();
+  await page.getByRole('button', { name: 'Edit section information' }).click();
+  const editor = page.locator('#section-form');
+  for (const day of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']) await editor.locator(`[name="meeting-${day}-enabled"]`).setChecked(day === 'Mon' || day === 'Tue');
+  await editor.locator('[name="meeting-Mon-start"]').fill('09:00');
+  await editor.locator('[name="meeting-Mon-end"]').fill('09:50');
+  await editor.locator('[name="meeting-Tue-start"]').fill('15:00');
+  await editor.locator('[name="meeting-Tue-end"]').fill('15:50');
+  await page.getByRole('button', { name: 'Save section' }).click();
+  await expect(page.locator('#toast')).toContainText('Section information saved');
+
+  const rows = page.locator('tbody tr');
+  await page.getByLabel('Search sections').fill('CS 101 · 002');
+  await expect(rows).toHaveCount(1);
+  await expect(rows.locator('.meeting')).toHaveText('Mon 09:00–09:50, Tue 15:00–15:50');
+  const day = (name: string) => page.getByRole('group', { name: 'Meets on' }).getByRole('checkbox', { name, exact: true });
+  const time = (name: string) => page.getByRole('group', { name: 'Starts' }).getByRole('checkbox', { name, exact: true });
+
+  // Tue + Before 11am: it meets on Tue and has a meeting before 11am, but not the same meeting.
+  await day('Tue').check();
+  await time('Before 11am').check();
+  await expect(page.getByRole('heading', { name: 'No sections found' })).toBeVisible();
+  // Mon + Before 11am: the Monday meeting starts at 09:00.
+  await day('Tue').uncheck();
+  await day('Mon').check();
+  await expect(rows).toHaveCount(1);
+  await expect(rows).toContainText('CS 101 · 002');
+  // Tue + 2pm and later: the Tuesday meeting starts at 15:00.
+  await day('Mon').uncheck();
+  await time('Before 11am').uncheck();
+  await day('Tue').check();
+  await time('2pm and later').check();
+  await expect(rows).toHaveCount(1);
+  await expect(rows).toContainText('CS 101 · 002');
 });
 test('main views and recommendation dialog pass automated accessibility checks', async ({ page }) => {
   await page.goto('/');
