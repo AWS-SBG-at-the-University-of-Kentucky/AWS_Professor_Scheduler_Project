@@ -33,12 +33,32 @@ test('first visit asks for a role, remembers it, and each home leads with its ma
   await expect(page.getByRole('heading', { name: 'Who are you today?' })).toBeVisible();
   await page.getByLabel('Which professor?').selectOption({ label: 'Maya Chen' });
   await page.getByRole('button', { name: /Continue as professor/ }).click();
+  // Maya's preferences are already submitted, so she starts on the overview; draft professors start on My preferences.
   await expect(page.getByRole('heading', { name: 'Welcome, Maya.' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: /preferences are (still a draft|submitted)/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your preferences are submitted.' })).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Welcome, Maya.' })).toBeVisible();
   await page.getByLabel('Demo role').selectOption('scheduler');
   await expect(page.getByRole('heading', { name: 'Sections to assign.' })).toBeVisible();
+});
+
+test('a draft professor starts on My preferences on a phone', async ({ page }) => {
+  await page.goto('/');
+  await page.getByLabel('Which professor?').selectOption({ label: 'Owen Davis' });
+  await page.getByRole('button', { name: /Continue as professor/ }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Your semester, your preferences.' })).toBeVisible();
+  expect(await clipped(page)).toEqual([]);
+});
+
+test('the walkthrough callout leads the welcome screen and fits a phone', async ({ page }) => {
+  await page.goto('/');
+  const open = page.getByRole('button', { name: 'Take the 2-minute walkthrough' });
+  await expect(open).toBeVisible();
+  expect((await open.boundingBox())!.y).toBeLessThan((await page.locator('.role-cards').boundingBox())!.y);
+  expect(await clipped(page)).toEqual([]);
+  expect(await smallTargets(page)).toEqual([]);
+  await open.click();
+  await expect(page.getByRole('dialog', { name: 'Try the complete journey' })).toBeVisible();
 });
 
 test('professor edits and submits preferences on a phone', async ({ page }) => {
@@ -58,6 +78,48 @@ test('scheduler approves a section from a card on a phone', async ({ page }) => 
   await page.getByRole('button', { name: 'Approve assignment', exact: true }).click();
   await expect(page.locator('#toast')).toContainText('Assignment approved');
 });
+
+test('the top bar walkthrough button opens the guide on a phone and stops highlighting once opened', async ({ page }) => {
+  await page.addInitScript(() => { if (!localStorage.getItem('facultyplan.identity')) localStorage.setItem('facultyplan.identity', JSON.stringify({ role: 'faculty', facultyId: 'FAC-001' })); });
+  await page.goto('/');
+  const fresh = page.locator('.topbar').getByRole('button', { name: 'Demo walkthrough, start here', exact: true });
+  await expect(fresh).toBeVisible();
+  const box = (await fresh.boundingBox())!;
+  expect(box.width).toBeGreaterThanOrEqual(44);
+  expect(box.height).toBeGreaterThanOrEqual(44);
+  // Keyboard activation, so every engine has a focused button for the dialog to return to.
+  await fresh.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('dialog', { name: 'Try the complete journey' })).toBeVisible();
+  await page.getByRole('button', { name: 'Close dialog' }).click();
+  const seen = page.locator('.topbar').getByRole('button', { name: 'Demo walkthrough', exact: true });
+  await expect(seen).toBeFocused();
+  await page.reload();
+  await expect(seen).toBeVisible();
+  await expect(page.locator('.start-here')).toHaveCount(0);
+  await seen.click();
+  await expect(page.getByRole('dialog', { name: 'Try the complete journey' })).toBeVisible();
+});
+
+for (const width of [320, 390]) {
+  for (const role of ['scheduler', 'faculty'] as const) {
+    test(`the ${role} top bar fits at ${width}px with nothing overlapping`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 700 });
+      await asRole(page, role);
+      await page.goto('/');
+      await expect(page.locator('.topbar').getByRole('button', { name: /^Demo walkthrough/ })).toBeVisible();
+      expect(await clipped(page)).toEqual([]);
+      expect(await smallTargets(page)).toEqual([]);
+      const overlaps = await page.locator('.identity-controls').evaluate(bar => {
+        const boxes = [...bar.querySelectorAll<HTMLElement>('select, button, .avatar')].map(el => ({ name: el.id || el.className, r: el.getBoundingClientRect() }));
+        const hits: string[] = [];
+        boxes.forEach((a, i) => boxes.slice(i + 1).forEach(b => { if (a.r.left < b.r.right - 0.5 && b.r.left < a.r.right - 0.5 && a.r.top < b.r.bottom - 0.5 && b.r.top < a.r.bottom - 0.5) hits.push(`${a.name} × ${b.name}`); }));
+        return hits;
+      });
+      expect(overlaps).toEqual([]);
+    });
+  }
+}
 
 const views = {
   scheduler: ['Overview', 'Course sections', 'Faculty directory', 'Teaching schedules', 'Activity & history'],
